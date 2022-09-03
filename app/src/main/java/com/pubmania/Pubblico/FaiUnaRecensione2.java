@@ -40,6 +40,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     GridLayout gridLayout;
     private void prova() {
 
+
+        //porocido
         gridLayout = (GridLayout) findViewById(R.id.gridView);
         gridLayout = (GridLayout) findViewById(R.id.gridView);
         gridLayout = (GridLayout) findViewById(R.id.gridView);
