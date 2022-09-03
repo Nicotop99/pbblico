@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,6 +34,19 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         email = "nicolino.oliverio@gmail.com";
         checkMiPiacciono();
         setTitle();
+        prova();
+    }
+
+    GridLayout gridLayout;
+    private void prova() {
+        gridLayout = (GridLayout) findViewById(R.id.gridView);
+        gridLayout = (GridLayout) findViewById(R.id.gridView);
+        gridLayout = (GridLayout) findViewById(R.id.gridView);
+        gridLayout = (GridLayout) findViewById(R.id.gridView);
+        gridLayout = (GridLayout) findViewById(R.id.dark);
+        gridLayout = (GridLayout) findViewById(R.id.gridView);
+        gridLayout = (GridLayout) findViewById(R.id.gridView);
+
     }
 
     TextView rec;
