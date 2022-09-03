@@ -1,0 +1,125 @@
+<resources>
+    <string name="app_name">Pub Mania</string>
+    <string name="ottieniScontiUnici">Ottini sconti unici</string>
+    <string name="trovapubnellevicinze">Trova Pub nelle vicinanze</string>
+    <string name="recensisciituoipubpreferitit">Recensisci i tuoi pub preferiti</string>
+    <string name="registrati">Registrati</string>
+    <string name="seigiaregistrato">Sei gia registrato?</string>
+    <string name="effettuaillogin">Effettua il Login cosa aspetti</string>
+    <string name="unisciapubmania">Unisci a Pub Mania per avere tutto questo</string>
+    <string name="confemail">Conf email</string>
+    <string name="registrazione">Registrazione</string>
+    <string name="caricaFotoProfilo">Carica foto profilo</string>
+    <string name="emailnoninserita">Email non inserita</string>
+    <string name="confemailnoninserita">Conf email non inserita</string>
+    <string name="passwordnoninserita">Password non inserita</string>
+    <string name="leemailnoncoincidono">Le email non coicidono</string>
+    <string name="confpassnoninserita">Conf pass non inserita</string>
+    <string name="lapassworddeveavereminimo8caratteri">La password deve avere minimo 8 caratteri</string>
+    <string name="errore">C\'è stato un problema. Riprovi più tardi</string>
+    <string name="verificalatuaemail">Verifica la tua email</string>
+    <string name="siagiaregistratoooo">Sei gia registrato effettua il login</string>
+    <string name="benvenuto">Benvenuto</string>
+    <string name="Effettuailloginpercontinuare">Effettua il login per continuare</string>
+    <string name="restaconnesso">Resta connesso</string>
+    <string name="haidimenticatolapassword">Hai dimenticato la password?</string>
+    <string name="cliccaQua">Clicca qua</string>
+    <string name="accedi">Accedi</string>
+    <string name="nonseiancoraregistrato">Non sei registrato</string>
+    <string name="passwordErrata">Password errata</string>
+    <string name="emailnonverificata">Email non verificata, se non riesci a trovare l\'email controlla anche nella casella SPAM</string>
+    <string name="verifica">Verifica</string>
+    <string name="vicinoame">Vicino a me</string>
+    <string name="notifiche">Notifiche</string>
+    <string name="profilo">Profilo</string>
+    <string name="tutti">Tutti</string>
+    <string name="sututtiiprodotti">di sconto su tutti i prodotti</string>
+    <string name="sututtolimporto">su tutto l\'importo</string>
+    <string name="scontoDi">Sconto di</string>
+    <string name="su">su</string>
+    <string name="cocktail">Cocktail</string>
+    <string name="salati">Salati</string>
+    <string name="dolci">Dolci</string>
+    <string name="bevande">Bevande</string>
+    <string name="cosastaicercando">Cosa stai cercando?</string>
+    <string name="ingredienti">Ingredienti</string>
+    <string name="nessunprodott">Nessun prodotto</string>
+    <string name="segui">Segui</string>
+    <string name="indicazioni">Indicazioni</string>
+    <string name="recensioni">Recensioni</string>
+    <string name="coupon">Coupon</string>
+    <string name="smettidiseguire">Smetti di seguire</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="menoRecente">Meno recente</string>
+    <string name="menousato">Meno usato</string>
+    <string name="piurecente">Più recente</string>
+    <string name="piuusato">Più usato</string>
+    <string name="visualizzaQR">Visualizza QR Code</string>
+    <string name="fattiscansiarequestoqrdalbarista">Fatti scandionare questo QR dal barista</string>
+    <string name="fine">Fine</string>
+    <string name="puoiusarlosolo">"Puoi usarlo solo "</string>
+    <string name="voltae">volte/a</string>
+    <string name="puoiusarlotsempre">Puoi usarlo sempre</string>
+    <string name="perifollower">Per i follower</string>
+    <string name="pertutti">Per tutti</string>
+    <string name="questoscontoèsoloperifollower">Questo coupon è solo per i follower</string>
+    <string name="iniziaaseguiore">Segui</string>
+    <string name="orario">Orario</string>
+    <string name="nomeLocale">Nome locale</string>
+    <string name="orarioapertura">Orario apertura</string>
+    <string name="lunedi">Lunedì</string>
+    <string name="martedi">Martedì</string>
+    <string name="mercoledi">Mercoledì</string>
+    <string name="giovedi">Giovedì</string>
+    <string name="venerdi">Venerdì</string>
+    <string name="sabato">Sabato</string>
+    <string name="domenica">Domenica</string>
+    <string name="orariochiusura">Orario chiusura</string>
+    <string name="piuvicino">Più vicino</string>
+    <string name="recensionipiualte">Recensioni più alte</string>
+    <string name="chiusurapiutardo">Chiusura più tardi</string>
+    <string name="seiqua">Sei qui</string>
+    <string name="apertura">Apertura </string>
+    <string name="chiusura">Chiusura </string>
+    <string name="scontoApplicato">Sconto applicato</string>
+    <string name="percentiale">Percentuale</string>
+    <string name="prezzo">Prezzo</string>
+    <string-array name="arrayCategoria">
+        <item>@string/cocktail</item>
+        <item>@string/dolci</item>
+        <item>@string/salati</item>
+        <item>@string/bevande</item>
+    </string-array>
+
+    <string-array name="vorreiVotare">
+        <item>@string/seleziona</item>
+        <item>@string/femminile</item>
+        <item>@string/maschile</item>
+        <item>@string/entrambe</item>
+    </string-array>
+
+
+    <string name="utilizzato">Utilizzato</string>
+    <string name="seguiti">Seguiti</string>
+    <string name="recensioniDisponibili">Recensioni disponibili</string>
+    <string name="recensionea">Recensione a</string>
+    <string name="titolo">Titolo</string>
+    <string name="descrizione">Descrizione</string>
+    <string name="avanti">Avanti</string>
+    <string name="vorreivotarelapopolarita">Vorrei votare la popolarità</string>
+    <string name="maschile">Maschile</string>
+    <string name="femminile">Femminile</string>
+    <string name="entrambe">Entrambe</string>
+    <string name="seleziona">Seleziona</string>
+    <string name="questadomandavienefattaperselezionarelacategori">Questa domanda viene fatta per selezionare la tipologia di sesso che vorresti votare nelle recensioni</string>
+    <string name="larispostanonecorretta">La risposta non può essere accettata</string>
+    <string name="struttura">Struttura</string>
+    <string name="prodotti">Prodotti</string>
+    <string name="servizio">Servizio</string>
+    <string name="bagni">Bagni</string>
+    <string name="quantitagente">Quantità persone</string>
+    <string name="valutazioneragazze">Valutazione ragazze</string>
+    <string name="valutazioneragazzi">Valutazione ragazzi</string>
+    <string name="prezzi">Prezzi</string>
+    <string name="divertimento">Divertimento</string>
+</resources>

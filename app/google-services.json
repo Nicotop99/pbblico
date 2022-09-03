@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "891813146423",
+    "project_id": "pubmania-404db",
+    "storage_bucket": "pubmania-404db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891813146423:android:62a7f443b493074d42b4b2",
+        "android_client_info": {
+          "package_name": "com.pubmania.Pubblico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891813146423-mm1qgbbl3lnldngcv1j5s8si4pngeqjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAUmNDGd_R0RNG0oS0Hnl2mZMtxhkrqLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891813146423-mm1qgbbl3lnldngcv1j5s8si4pngeqjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891813146423:android:c1948311da6a90da42b4b2",
+        "android_client_info": {
+          "package_name": "com.pubmania.professionista"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891813146423-rqte7uarn46lc7609qrsmt50bcvbtqm1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pubmania.professionista",
+            "certificate_hash": "f1b5e08ef936fb27c39e580350b3b37b5a194c14"
+          }
+        },
+        {
+          "client_id": "891813146423-mm1qgbbl3lnldngcv1j5s8si4pngeqjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAUmNDGd_R0RNG0oS0Hnl2mZMtxhkrqLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891813146423-mm1qgbbl3lnldngcv1j5s8si4pngeqjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
