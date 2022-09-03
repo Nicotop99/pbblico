@@ -71,6 +71,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                 uno1.setImageResource( R.drawable.recensione_si );
                 due1.setImageResource( R.drawable.recensione_si );
                 tre1.setImageResource( R.drawable.recensione_si );
+
                 quattro1.setImageResource( R.drawable.recensione_no );
                 cinque1.setImageResource( R.drawable.recensione_no );
             }
