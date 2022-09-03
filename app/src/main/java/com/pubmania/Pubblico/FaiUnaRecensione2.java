@@ -99,6 +99,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     }
 
 
+
     TextView rec;
     private void setTitle() {
         rec = (TextView) findViewById( R.id.textView66 );
