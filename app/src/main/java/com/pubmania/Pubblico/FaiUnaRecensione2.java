@@ -35,6 +35,128 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         checkMiPiacciono();
         setTitle();
         setStrutture();
+        setProdotti();
+        setServizio();
+    }
+
+    ImageView uno3,due3,tre3,quattro3,cinque3;
+    private void setServizio() {
+        uno3 = (ImageView) findViewById(R.id.imageView4831);
+        due3 = (ImageView) findViewById(R.id.imageView4931);
+        tre3 = (ImageView) findViewById(R.id.imageView5031);
+        quattro3 = (ImageView) findViewById(R.id.imageView5131);
+        cinque3 = (ImageView) findViewById(R.id.imageView5231);
+        uno3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno3.setImageResource(R.drawable.recensione_si);
+                due3.setImageResource(R.drawable.recensione_no);
+                tre3.setImageResource(R.drawable.recensione_no);
+                quattro3.setImageResource(R.drawable.recensione_no);
+                cinque3.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        due3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno3.setImageResource(R.drawable.recensione_si);
+                due3.setImageResource(R.drawable.recensione_si);
+                tre3.setImageResource(R.drawable.recensione_no);
+                quattro3.setImageResource(R.drawable.recensione_no);
+                cinque3.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        tre3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno3.setImageResource(R.drawable.recensione_si);
+                due3.setImageResource(R.drawable.recensione_si);
+                tre3.setImageResource(R.drawable.recensione_si);
+                quattro3.setImageResource(R.drawable.recensione_no);
+                cinque3.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        quattro3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno3.setImageResource(R.drawable.recensione_si);
+                due3.setImageResource(R.drawable.recensione_si);
+                tre3.setImageResource(R.drawable.recensione_si);
+                quattro3.setImageResource(R.drawable.recensione_si);
+                cinque3.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        cinque3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno3.setImageResource(R.drawable.recensione_si);
+                due3.setImageResource(R.drawable.recensione_si);
+                tre3.setImageResource(R.drawable.recensione_si);
+                quattro3.setImageResource(R.drawable.recensione_si);
+                cinque3.setImageResource(R.drawable.recensione_si);
+            }
+        });
+
+    }
+
+    ImageView uno2,due2,tre2,quattro2,cinque2;
+    private void setProdotti() {
+        uno2 = (ImageView) findViewById(R.id.imageView483);
+        due2 = (ImageView) findViewById(R.id.imageView493);
+        tre2 = (ImageView) findViewById(R.id.imageView503);
+        quattro2 = (ImageView) findViewById(R.id.imageView513);
+        cinque2 = (ImageView) findViewById(R.id.imageView523);
+
+        uno2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno2.setImageResource(R.drawable.recensione_si);
+                due2.setImageResource(R.drawable.recensione_no);
+                tre2.setImageResource(R.drawable.recensione_no);
+                quattro2.setImageResource(R.drawable.recensione_no);
+                cinque2.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        due2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno2.setImageResource(R.drawable.recensione_si);
+                due2.setImageResource(R.drawable.recensione_si);
+                tre2.setImageResource(R.drawable.recensione_no);
+                quattro2.setImageResource(R.drawable.recensione_no);
+                cinque2.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        tre2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno2.setImageResource(R.drawable.recensione_si);
+                due2.setImageResource(R.drawable.recensione_si);
+                tre2.setImageResource(R.drawable.recensione_si);
+                quattro2.setImageResource(R.drawable.recensione_no);
+                cinque2.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        quattro2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno2.setImageResource(R.drawable.recensione_si);
+                due2.setImageResource(R.drawable.recensione_si);
+                tre2.setImageResource(R.drawable.recensione_si);
+                quattro2.setImageResource(R.drawable.recensione_si);
+                cinque2.setImageResource(R.drawable.recensione_no);
+            }
+        });
+        cinque2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno2.setImageResource(R.drawable.recensione_si);
+                due2.setImageResource(R.drawable.recensione_si);
+                tre2.setImageResource(R.drawable.recensione_si  );
+                quattro2.setImageResource(R.drawable.recensione_si);
+                cinque2.setImageResource(R.drawable.recensione_si);
+            }
+        });
     }
 
 
