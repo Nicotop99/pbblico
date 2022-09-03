@@ -34,8 +34,68 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         email = "nicolino.oliverio@gmail.com";
         checkMiPiacciono();
         setTitle();
+        setStrutture();
     }
 
+
+    ImageView uno1,due1,tre1,quattro1,cinque1;
+    private void setStrutture() {
+        uno1 = (ImageView) findViewById( R.id.imageView48 );
+        due1 = (ImageView) findViewById( R.id.imageView49 );
+        tre1 = (ImageView) findViewById( R.id.imageView50 );
+        quattro1 = (ImageView) findViewById( R.id.imageView51 );
+        cinque1 = (ImageView) findViewById( R.id.imageView52 );
+        uno1.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno1.setImageResource( R.drawable.recensione_si );
+                due1.setImageResource( R.drawable.recensione_no );
+                tre1.setImageResource( R.drawable.recensione_no );
+                quattro1.setImageResource( R.drawable.recensione_no );
+                cinque1.setImageResource( R.drawable.recensione_no );
+            }
+        } );
+        due1.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno1.setImageResource( R.drawable.recensione_si );
+                due1.setImageResource( R.drawable.recensione_si );
+                tre1.setImageResource( R.drawable.recensione_no );
+                quattro1.setImageResource( R.drawable.recensione_no );
+                cinque1.setImageResource( R.drawable.recensione_no );
+            }
+        } );
+        tre1.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno1.setImageResource( R.drawable.recensione_si );
+                due1.setImageResource( R.drawable.recensione_si );
+                tre1.setImageResource( R.drawable.recensione_si );
+                quattro1.setImageResource( R.drawable.recensione_no );
+                cinque1.setImageResource( R.drawable.recensione_no );
+            }
+        } );
+        quattro1.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno1.setImageResource( R.drawable.recensione_si );
+                due1.setImageResource( R.drawable.recensione_si );
+                tre1.setImageResource( R.drawable.recensione_si );
+                quattro1.setImageResource( R.drawable.recensione_si );
+                cinque1.setImageResource( R.drawable.recensione_no );
+            }
+        } );
+        cinque1.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uno1.setImageResource( R.drawable.recensione_si );
+                due1.setImageResource( R.drawable.recensione_si );
+                tre1.setImageResource( R.drawable.recensione_si );
+                quattro1.setImageResource( R.drawable.recensione_si );
+                cinque1.setImageResource( R.drawable.recensione_si );
+            }
+        } );
+    }
 
 
     TextView rec;
