@@ -34,23 +34,9 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         email = "nicolino.oliverio@gmail.com";
         checkMiPiacciono();
         setTitle();
-        prova();
     }
 
-    GridLayout gridLayout;
-    private void prova() {
 
-
-        //porocido
-        gridLayout = (GridLayout) findViewById(R.id.gridView);
-        gridLayout = (GridLayout) findViewById(R.id.gridView);
-        gridLayout = (GridLayout) findViewById(R.id.gridView);
-        gridLayout = (GridLayout) findViewById(R.id.gridView);
-        gridLayout = (GridLayout) findViewById(R.id.dark);
-        gridLayout = (GridLayout) findViewById(R.id.gridView);
-        gridLayout = (GridLayout) findViewById(R.id.gridView);
-
-    }
 
     TextView rec;
     private void setTitle() {
