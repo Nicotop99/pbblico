@@ -90,8 +90,10 @@ public class ProfiloPubblico extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 TextView textView = (TextView) view.findViewById( R.id.textView56 );
+                                TextView idPo = (TextView) view.findViewById( R.id.textView69 );
                                 Intent intent = new Intent(getApplicationContext(),FaiUnaRecensione.class);
                                 intent.putExtra( "emailPub",textView.getText().toString()  );
+                                intent.putExtra("idPost",idPo.getText().toString());
                                 startActivity( intent );
                             }
                         } );

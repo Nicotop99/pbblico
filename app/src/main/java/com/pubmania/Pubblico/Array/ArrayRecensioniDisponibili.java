@@ -41,6 +41,8 @@ public class ArrayRecensioniDisponibili extends ArrayAdapter<StringRecensioni> {
         CircleImageView circleImageView = (CircleImageView) view.findViewById( R.id.circleImageView6 );
         TextView textView = (TextView) view.findViewById( R.id.textView52 );
         TextView email = (TextView) view.findViewById( R.id.textView56 );
+        TextView idPost = (TextView) view.findViewById(R.id.textView69);
+        idPost.setText(stringRecensioni.getId());
         email.setText( stringRecensioni.getEmailPub() );
 
         Glide.with( context ).load( stringRecensioni.getUrlFotoProfilo() ).into( circleImageView );

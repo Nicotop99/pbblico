@@ -3,6 +3,7 @@ package com.pubmania.Pubblico;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,9 +32,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.pubmania.Pubblico.String.StringRecensione;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 public class FaiUnaRecensione2 extends AppCompatActivity {
@@ -62,12 +69,17 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
 
     ImageView faiRecensione;
     ArrayList<String> arrayUrl = new ArrayList<>();
+    Group group1,group2;
     int d = 0;
     private void setRecensisci() {
         faiRecensione = (ImageView) findViewById(R.id.imageView54);
+        group1 = (Group) findViewById(R.id.group1);
+        group2 = (Group) findViewById(R.id.group2);
         faiRecensione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                group1.setVisibility(View.GONE);
+                group2.setVisibility(View.VISIBLE);
                 if(FaiUnaRecensione.arrayUri.size() > 0) {
                     FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
                     StorageReference storageReference = firebaseStorage.getReference();
@@ -93,9 +105,13 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                                             stringRecensione.setValServizio(String.valueOf(valServizio));
                                             stringRecensione.setValQuantitaGente(String.valueOf(valQuantitaPersone));
                                             stringRecensione.setValRagazze(String.valueOf(valRagazze));
+                                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                                            String currentDateandTime = sdf.format(new Date());
+                                            stringRecensione.setOra(currentDateandTime);
                                             stringRecensione.setValRagazzi(String.valueOf(valRagazzi));
                                             stringRecensione.setValPrezzi(String.valueOf(valPrezzi));
                                             stringRecensione.setEmailPubblico(email);
+
                                             String[] arr = arrayUrl.toArray(new String[arrayUrl.size()]);
                                             List<String> listIngg = Arrays.asList(arr);
                                             stringRecensione.setArrayList(listIngg);
@@ -103,24 +119,69 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                                     if (task.isSuccessful()) {
+                                                        Map<String, Object> user = new HashMap<>();
+                                                        user.put("idPost", task.getResult().getId());
+                                                        firebaseFirestore.collection(email+"recensioni").add(user);
                                                         DocumentReference documentReference = firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").document(task.getResult().getId());
                                                         documentReference.update("id", task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
-                                                                Intent i = new Intent(getApplicationContext(), ProfiloPubblico.class);
-                                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                startActivity(i);
-                                                                finish();
+                                                                DocumentReference documentReference1 = firebaseFirestore.collection(email+"Rec").document(FaiUnaRecensione.idPost);
+                                                                documentReference1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        Intent i = new Intent(getApplicationContext(), ProfiloPubblico.class);
+                                                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                        startActivity(i);
+                                                                        finish();
+                                                                    }
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        group2.setVisibility(View.GONE);
+                                                                        group1.setVisibility(View.VISIBLE);
+                                                                        Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
+                                                                    }
+                                                                });
+
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                group2.setVisibility(View.GONE);
+                                                                group1.setVisibility(View.VISIBLE);
+                                                                Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
                                                             }
                                                         });
                                                     }
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    group2.setVisibility(View.GONE);
+                                                    group1.setVisibility(View.VISIBLE);
+                                                    Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
                                                 }
                                             });
 
                                         }
 
                                     }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        group2.setVisibility(View.GONE);
+                                        group1.setVisibility(View.VISIBLE);
+                                        Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
+                                    }
                                 });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                group2.setVisibility(View.GONE);
+                                group1.setVisibility(View.VISIBLE);
+                                Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -128,6 +189,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                     StringRecensione stringRecensione = new StringRecensione();
                     stringRecensione.setDesc(FaiUnaRecensione.desc);
                     stringRecensione.setEmailpub(FaiUnaRecensione.emailPub);
+                    stringRecensione.setEmailPubblico(email);
                     stringRecensione.setTitolo(FaiUnaRecensione.titolo);
                     stringRecensione.setValDivertimento(String.valueOf(valDivertimento));
                     stringRecensione.setValBagni(String.valueOf(valBagni));
@@ -138,7 +200,9 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                     stringRecensione.setValRagazze(String.valueOf(valRagazze));
                     stringRecensione.setValRagazzi(String.valueOf(valRagazzi));
                     stringRecensione.setValPrezzi(String.valueOf(valPrezzi));
-
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
+                    stringRecensione.setOra(currentDateandTime);
 
 
                     firebaseFirestore.collection(FaiUnaRecensione.emailPub+"Rec").add(stringRecensione).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

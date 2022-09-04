@@ -7,16 +7,17 @@ import java.util.List;
 
 public class StringRecensione {
     public String id,emailpub,emailPubblico,desc,titolo,valStruttura,valProdotti,valBagni,valQuantitaGente,valRagazze,valRagazzi,
-            valPrezzi,valDivertimento,valServizio;
+            valPrezzi,valDivertimento,valServizio,ora;
     public List<String> arrayList;
 
     public StringRecensione(){
 
     }
 
-    public StringRecensione(List<String> arrayList, String valServizio, String id, String emailpub, String emailPubblico, String desc, String titolo, String valStruttura, String valProdotti, String valBagni,
+    public StringRecensione(String ora, List<String> arrayList, String valServizio, String id, String emailpub, String emailPubblico, String desc, String titolo, String valStruttura, String valProdotti, String valBagni,
                             String valQuantitaGente, String valRagazze, String valRagazzi, String valPrezzi, String valDivertimento) {
         this.id = id;
+        this.ora = ora;
         this.emailpub = emailpub;
         this.arrayList = arrayList;
         this.emailPubblico = emailPubblico;
@@ -31,6 +32,14 @@ public class StringRecensione {
         this.valRagazzi = valRagazzi;
         this.valPrezzi = valPrezzi;
         this.valDivertimento = valDivertimento;
+    }
+
+    public String getOra() {
+        return ora;
+    }
+
+    public void setOra(String ora) {
+        this.ora = ora;
     }
 
     public String getValServizio() {

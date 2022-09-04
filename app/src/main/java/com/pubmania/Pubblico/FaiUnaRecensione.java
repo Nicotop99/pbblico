@@ -33,7 +33,7 @@ import java.util.UUID;
 public class FaiUnaRecensione extends AppCompatActivity {
 
     String email;
-    public static String emailPub;
+    public static String emailPub,idPost;
     TextView rec;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class FaiUnaRecensione extends AppCompatActivity {
         setContentView( R.layout.activity_fai_una_recensione );
         email = "nicolino.oliverio@gmail.com";
         emailPub = getIntent().getExtras().getString( "emailPub" );
+        idPost = getIntent().getExtras().getString("idPost");
         rec = (TextView) findViewById( R.id.textView58 );
         Log.d("odsmflsdm",emailPub);
         chooseImage();

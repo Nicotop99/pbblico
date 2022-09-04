@@ -123,4 +123,6 @@
     <string name="prezzi">Prezzi</string>
     <string name="divertimento">Divertimento</string>
     <string name="recensiona">Recensiona</string>
+    <string name="creazionerecension">Creazione recensione in corso</string>
+    <string name="Attenderepr">Attendere prego..</string>
 </resources>
