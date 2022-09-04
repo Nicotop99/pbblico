@@ -10,12 +10,12 @@
         android:id="@+id/list_home"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scrollbars="none"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="90dp"
         android:divider="@drawable/back_trans"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,8 @@
             android:backgroundTint="@color/giallochiaro"
             android:src="@drawable/search_icon"
             app:borderWidth="0dp"
-            app:layout_anchor="@id/bottomAppBar" />
+            app:layout_anchor="@id/bottomAppBar"
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

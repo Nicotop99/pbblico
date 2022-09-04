@@ -23,8 +23,12 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class FaiUnaRecensione extends AppCompatActivity {
 
@@ -59,6 +63,8 @@ public class FaiUnaRecensione extends AppCompatActivity {
     public static String titolo,desc;
     TextInputLayout l_desc,l_titolo;
     ImageView avanti;
+    int d = 0;
+
     private void setAvanti() {
         l_titolo = (TextInputLayout) findViewById( R.id.layoutPass );
         l_desc = (TextInputLayout) findViewById( R.id.layoutdesc );
@@ -68,11 +74,12 @@ public class FaiUnaRecensione extends AppCompatActivity {
         avanti.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                titolo = t_desc.getText().toString();
+                titolo = t_titolo.getText().toString();
                 desc = t_desc.getText().toString();
+
                 Intent i = new Intent(getApplicationContext(), FaiUnaRecensione2.class);
                 startActivity( i );
-                finish();
+
             }
         } );
     }
@@ -95,7 +102,7 @@ public class FaiUnaRecensione extends AppCompatActivity {
     }
 
    public static ArrayList<SlideModel> arrayList = new ArrayList<>();
-    public static ArrayList<Uri> arrayUri = new ArrayList<>();
+    public static ArrayList<String> arrayUri = new ArrayList<>();
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult( requestCode, resultCode, data );
@@ -108,14 +115,15 @@ public class FaiUnaRecensione extends AppCompatActivity {
                 if(selectedimg == null){
                     //selezionata 1 immagine
                     arrayList.add( new SlideModel( data.getData().toString() , ScaleTypes.CENTER_INSIDE ));
+                    arrayUri.add(String.valueOf(data.getData()));
                     imageSlider.setImageList( arrayList );
-                    arrayUri.add( data.getData() );
+
                 }else{
                     for (int i = 0;i<selectedimg.getItemCount();i++){
                         ClipData.Item item = selectedimg.getItemAt( i );
                         arrayList.add( new SlideModel( String.valueOf( item.getUri() ), ScaleTypes.CENTER_INSIDE ));
 
-                        arrayUri.add( item.getUri() );
+                        arrayUri.add(String.valueOf(item.getUri()));
                     }
                     imageSlider.setImageList( arrayList );
                 }
