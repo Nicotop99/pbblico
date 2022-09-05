@@ -71,6 +71,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     ArrayList<String> arrayUrl = new ArrayList<>();
     Group group1,group2;
     int d = 0;
+    int countMedia,countTot,media;
     private void setRecensisci() {
         faiRecensione = (ImageView) findViewById(R.id.imageView54);
         group1 = (Group) findViewById(R.id.group1);
@@ -111,9 +112,47 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                                             stringRecensione.setValRagazzi(String.valueOf(valRagazzi));
                                             stringRecensione.setValPrezzi(String.valueOf(valPrezzi));
                                             stringRecensione.setEmailPubblico(email);
+                                            if(valStruttura>0){
+                                                countMedia +=1;
+                                                countTot += valStruttura;
+                                            }
+                                            if(valProdotti>0){
+                                                countMedia +=1;
+                                                countTot +=valProdotti;
+                                            }
+                                            if(valServizio >0){
+                                                countMedia +=1;
+                                                countTot +=valServizio;
+                                            }
+                                            if(valBagni > 0){
+                                                countMedia +=1;
+                                                countTot +=valBagni;
+                                            }if(valQuantitaPersone >0){
+                                                countMedia +=1;
+                                                countTot +=valQuantitaPersone;
+                                            }if(valRagazze >0){
+                                                countMedia +=1;
+                                                countTot +=valRagazze;
+                                            }if(valRagazzi>0){
+                                                countMedia +=1;
+                                                countTot += valRagazzi;
+                                            }
+                                            if(valPrezzi>0){
+                                                countMedia +=1;
+                                                countTot += valPrezzi;
+                                            }
+                                            if(valDivertimento >0){
+                                                countMedia +=1;
+                                                countTot += valDivertimento;
+                                            }
 
+
+
+                                            media = countTot / countMedia;
+                                            stringRecensione.setMedia(String.valueOf(media));
                                             String[] arr = arrayUrl.toArray(new String[arrayUrl.size()]);
                                             List<String> listIngg = Arrays.asList(arr);
+
                                             stringRecensione.setArrayList(listIngg);
                                             firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").add(stringRecensione).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                 @Override
