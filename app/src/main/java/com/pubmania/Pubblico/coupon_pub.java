@@ -55,6 +55,7 @@ public class coupon_pub extends AppCompatActivity {
                             arrayList.add( stringPost_coupon );
                             ArrayCoupon_pub arrayCoupon_pub = new ArrayCoupon_pub( coupon_pub.this,arrayList,email,emailPub );
                             listView.setAdapter( arrayCoupon_pub );
+                            Log.d("fkmdslmfsd",documentSnapshot.getString("token"));
 
                         }
 

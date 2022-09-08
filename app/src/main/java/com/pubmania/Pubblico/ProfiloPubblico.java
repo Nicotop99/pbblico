@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +12,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,17 +27,29 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.Constants;
 import com.pubmania.Pubblico.Array.ArrayRecensioniDisponibili;
 import com.pubmania.Pubblico.Array.ArraySegutiiProgilo;
 import com.pubmania.Pubblico.Array.arrayCouponUtilizzati;
 import com.pubmania.Pubblico.String.StringPost_coupon;
 import com.pubmania.Pubblico.String.StringRecensioni;
 import com.pubmania.Pubblico.String.Stringdoppia;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.Map;
 
 public class ProfiloPubblico extends AppCompatActivity {
 
@@ -44,7 +63,13 @@ public class ProfiloPubblico extends AppCompatActivity {
         setaccountSeguiti();
         setecensioniDisponibili();
         setProfile();
+
+
+
     }
+
+
+
     CircleImageView fotoProfilo;
     TextView nome;
 
@@ -91,9 +116,12 @@ public class ProfiloPubblico extends AppCompatActivity {
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 TextView textView = (TextView) view.findViewById( R.id.textView56 );
                                 TextView idPo = (TextView) view.findViewById( R.id.textView69 );
+                                TextView token = (TextView) view.findViewById(R.id.textView72);
+
                                 Intent intent = new Intent(getApplicationContext(),FaiUnaRecensione.class);
                                 intent.putExtra( "emailPub",textView.getText().toString()  );
                                 intent.putExtra("idPost",idPo.getText().toString());
+                                intent.putExtra("token",token.getText().toString());
                                 startActivity( intent );
                             }
                         } );

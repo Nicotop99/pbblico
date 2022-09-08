@@ -65,6 +65,8 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cStruttura"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -129,9 +131,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cProdotti"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:id="@+id/textView693333"
@@ -193,10 +197,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cServizi"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
+
                 android:layout_height="wrap_content"
-
-
                 android:layout_marginTop="10dp">
 
                 <TextView
@@ -259,9 +264,10 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cBagni"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="10dp">
 
                 <LinearLayout
@@ -325,9 +331,10 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cQuantitaGente"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="10dp">
 
                 <LinearLayout
@@ -391,9 +398,9 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constRagazze"
+                android:id="@+id/cRagazze"
                 android:layout_width="match_parent"
-
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
@@ -460,7 +467,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:visibility="gone"
-                android:id="@+id/entrambi"
+                android:id="@+id/cRagazzi"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_height="wrap_content"
 
                 >
@@ -526,9 +535,10 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cPrezzi"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="10dp">
 
                 <LinearLayout
@@ -592,9 +602,10 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cDivertineto"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="10dp">
 
                 <LinearLayout

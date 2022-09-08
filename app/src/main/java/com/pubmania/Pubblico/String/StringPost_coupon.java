@@ -4,7 +4,7 @@ import java.util.List;
 
 public class StringPost_coupon {
 
-    public String id,descrizione,like,pinnato,categoria;
+    public String id,descrizione,like,pinnato,categoria,token;
     public List<String> foto;
     public String titolo,email,tipo,giorno,mese,ora,prezzo,quanteVolte,chi,qualeProdotto,volteUtilizzate;
 
@@ -13,8 +13,9 @@ public class StringPost_coupon {
 
     }
 
-    public StringPost_coupon(String id, String descrizione, String like, String pinnato, String categoria, List<String> foto, String titolo, String email, String tipo, String giorno, String mese, String ora, String prezzo, String quanteVolte, String chi, String qualeProdotto, String volteUtilizzate, String categoria1) {
+    public StringPost_coupon( String token,String id, String descrizione, String like, String pinnato, String categoria, List<String> foto, String titolo, String email, String tipo, String giorno, String mese, String ora, String prezzo, String quanteVolte, String chi, String qualeProdotto, String volteUtilizzate, String categoria1) {
         this.id = id;
+        this.token = token;
         this.descrizione = descrizione;
         this.like = like;
         this.pinnato = pinnato;
@@ -34,6 +35,13 @@ public class StringPost_coupon {
         this.categoria = categoria1;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getId() {
         return id;

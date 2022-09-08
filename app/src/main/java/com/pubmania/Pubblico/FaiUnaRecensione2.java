@@ -13,12 +13,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,6 +35,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.pubmania.Pubblico.String.StringRecensione;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +47,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.pubmania.Pubblico.FaiUnaRecensione.idPost;
+import static com.pubmania.Pubblico.FaiUnaRecensione.token;
 
 public class FaiUnaRecensione2 extends AppCompatActivity {
 
@@ -72,200 +81,351 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     Group group1,group2;
     int d = 0;
     int countMedia,countTot,media;
+    ConstraintLayout strutura,prodotti,servizio,bagni,quantitaGente,ragazze,regazzi,prezzi,divertimento;
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "AAAAz6Q0rzc:APA91bHLB3SMR7R4K9gtfjSocQ9BhA8Ilh5p7O0sLU12qhRYdY9NQ-xiD1qQmQn1lA84ArFF9uORaMBghY2gdx8cZiejNG7xwLgoC4hvfiNNY0Hy8cE6uKdHclBw3uVWjhTa_1cyxuIA";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+    String TOPIC;
+    private void propvaNotifica(String token, String idPost) {
+
+        TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
+
+
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put("title", getString(R.string.nuovarecensioneda));
+            notifcationBody.put("message", getString(R.string.cliccalanotificaperidettagli));
+            notifcationBody.put("tipo","Recensione");
+            notifcationBody.put("idPost",idPost);
+            notification.put("to", token);
+            notification.put("data", notifcationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage() );
+        }
+        sendNotification(notification);
+
+
+
+
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        startActivity(new Intent(getApplicationContext(), ProfiloPubblico.class));
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        propvaNotifica(token, idPost);
+                        Log.d("onfljdsnfl",error.getMessage() + " ciao");
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+    }
     private void setRecensisci() {
+
+
+
+
+        strutura = (ConstraintLayout) findViewById(R.id.cStruttura);
+        prodotti = (ConstraintLayout) findViewById(R.id.cProdotti);
+        servizio = (ConstraintLayout) findViewById(R.id.cServizi);
+        bagni = (ConstraintLayout) findViewById(R.id.cBagni);
+        quantitaGente = (ConstraintLayout) findViewById(R.id.cQuantitaGente);
+        ragazze = (ConstraintLayout) findViewById(R.id.cRagazze);
+        regazzi = (ConstraintLayout) findViewById(R.id.cRagazzi);
+        prezzi = (ConstraintLayout) findViewById(R.id.cPrezzi);
+        divertimento = (ConstraintLayout) findViewById(R.id.cDivertineto);
         faiRecensione = (ImageView) findViewById(R.id.imageView54);
         group1 = (Group) findViewById(R.id.group1);
         group2 = (Group) findViewById(R.id.group2);
         faiRecensione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                group1.setVisibility(View.GONE);
-                group2.setVisibility(View.VISIBLE);
-                if(FaiUnaRecensione.arrayUri.size() > 0) {
-                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-                    StorageReference storageReference = firebaseStorage.getReference();
-                    StorageReference storageReference1 = storageReference.child(email + "/" + UUID.randomUUID().toString());
-                    for (int i = 0; i < FaiUnaRecensione.arrayUri.size(); i++) {
-                        storageReference1.putFile(Uri.parse(FaiUnaRecensione.arrayUri.get(i))).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                d += 1;
-                                storageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        arrayUrl.add(String.valueOf(uri));
-                                        if (arrayUrl.size() == FaiUnaRecensione.arrayUri.size()) {
-                                            StringRecensione stringRecensione = new StringRecensione();
-                                            stringRecensione.setDesc(FaiUnaRecensione.desc);
-                                            stringRecensione.setEmailpub(FaiUnaRecensione.emailPub);
-                                            stringRecensione.setTitolo(FaiUnaRecensione.titolo);
-                                            stringRecensione.setValDivertimento(String.valueOf(valDivertimento));
-                                            stringRecensione.setValBagni(String.valueOf(valBagni));
-                                            stringRecensione.setValStruttura(String.valueOf(valStruttura));
-                                            stringRecensione.setValProdotti(String.valueOf(valProdotti));
-                                            stringRecensione.setValServizio(String.valueOf(valServizio));
-                                            stringRecensione.setValQuantitaGente(String.valueOf(valQuantitaPersone));
-                                            stringRecensione.setValRagazze(String.valueOf(valRagazze));
-                                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                                            String currentDateandTime = sdf.format(new Date());
-                                            stringRecensione.setOra(currentDateandTime);
-                                            stringRecensione.setValRagazzi(String.valueOf(valRagazzi));
-                                            stringRecensione.setValPrezzi(String.valueOf(valPrezzi));
-                                            stringRecensione.setEmailPubblico(email);
-                                            if(valStruttura>0){
-                                                countMedia +=1;
-                                                countTot += valStruttura;
-                                            }
-                                            if(valProdotti>0){
-                                                countMedia +=1;
-                                                countTot +=valProdotti;
-                                            }
-                                            if(valServizio >0){
-                                                countMedia +=1;
-                                                countTot +=valServizio;
-                                            }
-                                            if(valBagni > 0){
-                                                countMedia +=1;
-                                                countTot +=valBagni;
-                                            }if(valQuantitaPersone >0){
-                                                countMedia +=1;
-                                                countTot +=valQuantitaPersone;
-                                            }if(valRagazze >0){
-                                                countMedia +=1;
-                                                countTot +=valRagazze;
-                                            }if(valRagazzi>0){
-                                                countMedia +=1;
-                                                countTot += valRagazzi;
-                                            }
-                                            if(valPrezzi>0){
-                                                countMedia +=1;
-                                                countTot += valPrezzi;
-                                            }
-                                            if(valDivertimento >0){
-                                                countMedia +=1;
-                                                countTot += valDivertimento;
-                                            }
+                if (valStruttura > 0) {
+                    countMedia += 1;
+                    countTot += valStruttura;
+                }
+                if (valProdotti > 0) {
+                    countMedia += 1;
+                    countTot += valProdotti;
+                }
+                if (valServizio > 0) {
+                    countMedia += 1;
+                    countTot += valServizio;
+                }
+                if (valBagni > 0) {
+                    countMedia += 1;
+                    countTot += valBagni;
+                }
+                if (valQuantitaPersone > 0) {
+                    countMedia += 1;
+                    countTot += valQuantitaPersone;
+                }
+                if (valRagazze > 0) {
+                    countMedia += 1;
+                    countTot += valRagazze;
+                }
+                if (valRagazzi > 0) {
+                    countMedia += 1;
+                    countTot += valRagazzi;
+                }
+                if (valPrezzi > 0) {
+                    countMedia += 1;
+                    countTot += valPrezzi;
+                }
+                if (valDivertimento > 0) {
+                    countMedia += 1;
+                    countTot += valDivertimento;
+                }
+
+                if(valStruttura == 0){
+                    strutura.setBackgroundResource(R.drawable.red_recange);
+                } if(valProdotti == 0){
+                    prodotti.setBackgroundResource(R.drawable.red_recange);
+                } if(valServizio == 0){
+                    servizio.setBackgroundResource(R.drawable.red_recange);
+                } if(valBagni == 0){
+                    bagni.setBackgroundResource(R.drawable.red_recange);
+                } if(valQuantitaPersone == 0){
+                    quantitaGente.setBackgroundResource(R.drawable.red_recange);
+                }
+                 if(valRagazzi == 0 && valRagazze == 0){
+                    ragazze.setBackgroundResource(R.drawable.red_recange);
+                    regazzi.setBackgroundResource(R.drawable.red_recange);
+                }
+                 if(valPrezzi == 0){
+                    prezzi.setBackgroundResource(R.drawable.red_recange);
+                }
+                 if(valDivertimento == 0){
+                    divertimento.setBackgroundResource(R.drawable.red_recange);
+                }
+                if(countMedia > 8 ) {
+
+                    group1.setVisibility(View.GONE);
+                    group2.setVisibility(View.VISIBLE);
+                    if (FaiUnaRecensione.arrayUri.size() > 0) {
+                        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                        StorageReference storageReference = firebaseStorage.getReference();
+                        StorageReference storageReference1 = storageReference.child(email + "/" + UUID.randomUUID().toString());
+                        for (int i = 0; i < FaiUnaRecensione.arrayUri.size(); i++) {
+                            storageReference1.putFile(Uri.parse(FaiUnaRecensione.arrayUri.get(i))).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                    d += 1;
+                                    storageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            arrayUrl.add(String.valueOf(uri));
+                                            if (arrayUrl.size() == FaiUnaRecensione.arrayUri.size()) {
+                                                StringRecensione stringRecensione = new StringRecensione();
+                                                stringRecensione.setDesc(FaiUnaRecensione.desc);
+                                                stringRecensione.setEmailpub(FaiUnaRecensione.emailPub);
+                                                stringRecensione.setTitolo(FaiUnaRecensione.titolo);
+                                                stringRecensione.setValDivertimento(String.valueOf(valDivertimento));
+                                                stringRecensione.setValBagni(String.valueOf(valBagni));
+                                                stringRecensione.setValStruttura(String.valueOf(valStruttura));
+                                                stringRecensione.setValProdotti(String.valueOf(valProdotti));
+                                                stringRecensione.setValServizio(String.valueOf(valServizio));
+                                                stringRecensione.setValQuantitaGente(String.valueOf(valQuantitaPersone));
+                                                stringRecensione.setValRagazze(String.valueOf(valRagazze));
+                                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                                                String currentDateandTime = sdf.format(new Date());
+                                                stringRecensione.setOra(currentDateandTime);
+                                                stringRecensione.setValRagazzi(String.valueOf(valRagazzi));
+                                                stringRecensione.setValPrezzi(String.valueOf(valPrezzi));
+                                                stringRecensione.setEmailPubblico(email);
 
 
 
-                                            media = countTot / countMedia;
-                                            stringRecensione.setMedia(String.valueOf(media));
-                                            String[] arr = arrayUrl.toArray(new String[arrayUrl.size()]);
-                                            List<String> listIngg = Arrays.asList(arr);
+                                                media = countTot / countMedia;
+                                                stringRecensione.setMedia(String.valueOf(media));
+                                                String[] arr = arrayUrl.toArray(new String[arrayUrl.size()]);
+                                                List<String> listIngg = Arrays.asList(arr);
 
-                                            stringRecensione.setArrayList(listIngg);
-                                            firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").add(stringRecensione).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Map<String, Object> user = new HashMap<>();
-                                                        user.put("idPost", task.getResult().getId());
-                                                        firebaseFirestore.collection(email+"recensioni").add(user);
-                                                        DocumentReference documentReference = firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").document(task.getResult().getId());
-                                                        documentReference.update("id", task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                DocumentReference documentReference1 = firebaseFirestore.collection(email+"Rec").document(FaiUnaRecensione.idPost);
-                                                                documentReference1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        Intent i = new Intent(getApplicationContext(), ProfiloPubblico.class);
-                                                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                        startActivity(i);
-                                                                        finish();
-                                                                    }
-                                                                }).addOnFailureListener(new OnFailureListener() {
-                                                                    @Override
-                                                                    public void onFailure(@NonNull Exception e) {
-                                                                        group2.setVisibility(View.GONE);
-                                                                        group1.setVisibility(View.VISIBLE);
-                                                                        Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
-                                                                    }
-                                                                });
+                                                stringRecensione.setArrayList(listIngg);
+                                                firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").add(stringRecensione).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Map<String, Object> user = new HashMap<>();
+                                                            user.put("idPost", task.getResult().getId());
+                                                            firebaseFirestore.collection(email + "recensioni").add(user);
+                                                            DocumentReference documentReference = firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").document(task.getResult().getId());
+                                                            documentReference.update("id", task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> taskkk) {
+                                                                    DocumentReference documentReference1 = firebaseFirestore.collection(email + "Rec").document(FaiUnaRecensione.idPost);
+                                                                    documentReference1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> taskk) {
+                                                                            Log.d("ofndsnf",token);
+                                                                            propvaNotifica(token,task.getResult().getId());
+                                                                        }
+                                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception e) {
+                                                                            group2.setVisibility(View.GONE);
+                                                                            group1.setVisibility(View.VISIBLE);
+                                                                            Toast.makeText(getApplicationContext(), getString(R.string.errore), Toast.LENGTH_LONG).show();
+                                                                        }
+                                                                    });
 
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                group2.setVisibility(View.GONE);
-                                                                group1.setVisibility(View.VISIBLE);
-                                                                Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
-                                                            }
-                                                        });
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    group2.setVisibility(View.GONE);
+                                                                    group1.setVisibility(View.VISIBLE);
+                                                                    Toast.makeText(getApplicationContext(), getString(R.string.errore), Toast.LENGTH_LONG).show();
+                                                                }
+                                                            });
+                                                        }
                                                     }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        group2.setVisibility(View.GONE);
+                                                        group1.setVisibility(View.VISIBLE);
+                                                        Toast.makeText(getApplicationContext(), getString(R.string.errore), Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+
+                                            }
+
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            group2.setVisibility(View.GONE);
+                                            group1.setVisibility(View.VISIBLE);
+                                            Toast.makeText(getApplicationContext(), getString(R.string.errore), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    group2.setVisibility(View.GONE);
+                                    group1.setVisibility(View.VISIBLE);
+                                    Toast.makeText(getApplicationContext(), getString(R.string.errore), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        StringRecensione stringRecensione = new StringRecensione();
+                        stringRecensione.setDesc(FaiUnaRecensione.desc);
+                        stringRecensione.setEmailpub(FaiUnaRecensione.emailPub);
+                        stringRecensione.setEmailPubblico(email);
+                        stringRecensione.setTitolo(FaiUnaRecensione.titolo);
+                        stringRecensione.setValDivertimento(String.valueOf(valDivertimento));
+                        stringRecensione.setValBagni(String.valueOf(valBagni));
+                        stringRecensione.setValStruttura(String.valueOf(valStruttura));
+                        stringRecensione.setValProdotti(String.valueOf(valProdotti));
+                        stringRecensione.setValServizio(String.valueOf(valServizio));
+                        stringRecensione.setValQuantitaGente(String.valueOf(valQuantitaPersone));
+                        stringRecensione.setValRagazze(String.valueOf(valRagazze));
+                        stringRecensione.setValRagazzi(String.valueOf(valRagazzi));
+                        stringRecensione.setValPrezzi(String.valueOf(valPrezzi));
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                        String currentDateandTime = sdf.format(new Date());
+                        stringRecensione.setOra(currentDateandTime);
+                        if (valStruttura > 0) {
+                            countMedia += 1;
+                            countTot += valStruttura;
+                        }
+                        if (valProdotti > 0) {
+                            countMedia += 1;
+                            countTot += valProdotti;
+                        }
+                        if (valServizio > 0) {
+                            countMedia += 1;
+                            countTot += valServizio;
+                        }
+                        if (valBagni > 0) {
+                            countMedia += 1;
+                            countTot += valBagni;
+                        }
+                        if (valQuantitaPersone > 0) {
+                            countMedia += 1;
+                            countTot += valQuantitaPersone;
+                        }
+                        if (valRagazze > 0) {
+                            countMedia += 1;
+                            countTot += valRagazze;
+                        }
+                        if (valRagazzi > 0) {
+                            countMedia += 1;
+                            countTot += valRagazzi;
+                        }
+                        if (valPrezzi > 0) {
+                            countMedia += 1;
+                            countTot += valPrezzi;
+                        }
+                        if (valDivertimento > 0) {
+                            countMedia += 1;
+                            countTot += valDivertimento;
+                        }
+
+
+                        media = countTot / countMedia;
+                        stringRecensione.setMedia(String.valueOf(media));
+                        Log.d("nfdjklsnfsf", String.valueOf(media));
+                        firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").add(stringRecensione).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentReference documentReference = firebaseFirestore.collection(FaiUnaRecensione.emailPub + "Rec").document(task.getResult().getId());
+                                    documentReference.update("id", task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task2) {
+                                            DocumentReference documentReference1 = firebaseFirestore.collection(email + "Rec").document(FaiUnaRecensione.idPost);
+                                            documentReference1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> tas1k) {
+                                                    Log.d("ofndsnf",token);
+
+                                                    propvaNotifica(token, task.getResult().getId());
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     group2.setVisibility(View.GONE);
                                                     group1.setVisibility(View.VISIBLE);
-                                                    Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), getString(R.string.errore), Toast.LENGTH_LONG).show();
                                                 }
                                             });
 
                                         }
-
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        group2.setVisibility(View.GONE);
-                                        group1.setVisibility(View.VISIBLE);
-                                        Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                group2.setVisibility(View.GONE);
-                                group1.setVisibility(View.VISIBLE);
-                                Toast.makeText(getApplicationContext(),getString(R.string.errore),Toast.LENGTH_LONG).show();
+                                    });
+                                }
                             }
                         });
+
                     }
-                }else{
-                    StringRecensione stringRecensione = new StringRecensione();
-                    stringRecensione.setDesc(FaiUnaRecensione.desc);
-                    stringRecensione.setEmailpub(FaiUnaRecensione.emailPub);
-                    stringRecensione.setEmailPubblico(email);
-                    stringRecensione.setTitolo(FaiUnaRecensione.titolo);
-                    stringRecensione.setValDivertimento(String.valueOf(valDivertimento));
-                    stringRecensione.setValBagni(String.valueOf(valBagni));
-                    stringRecensione.setValStruttura(String.valueOf(valStruttura));
-                    stringRecensione.setValProdotti(String.valueOf(valProdotti));
-                    stringRecensione.setValServizio(String.valueOf(valServizio));
-                    stringRecensione.setValQuantitaGente(String.valueOf(valQuantitaPersone));
-                    stringRecensione.setValRagazze(String.valueOf(valRagazze));
-                    stringRecensione.setValRagazzi(String.valueOf(valRagazzi));
-                    stringRecensione.setValPrezzi(String.valueOf(valPrezzi));
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                    String currentDateandTime = sdf.format(new Date());
-                    stringRecensione.setOra(currentDateandTime);
-
-
-                    firebaseFirestore.collection(FaiUnaRecensione.emailPub+"Rec").add(stringRecensione).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                            if(task.isSuccessful()){
-                                DocumentReference documentReference = firebaseFirestore.collection(FaiUnaRecensione.emailPub+"Rec").document(task.getResult().getId());
-                                documentReference.update("id",task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Intent i = new Intent(getApplicationContext(),ProfiloPubblico.class);
-                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(i);
-                                        finish();
-                                    }
-                                });
-                            }
-                        }
-                    });
-
                 }
             }
         });
     }
+
+
+
 
 
     ImageView uno8,due8,tre8,quattro8,cinque8;
@@ -280,6 +440,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valDivertimento = 1;
+                divertimento.setBackgroundResource(0);
+
                 uno8.setImageResource(R.drawable.recensione_si);
                 due8.setImageResource(R.drawable.recensione_no);
                 tre8.setImageResource(R.drawable.recensione_no);
@@ -291,6 +453,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valDivertimento = 2;
+                divertimento.setBackgroundResource(0);
+
 
                 uno8.setImageResource(R.drawable.recensione_si);
                 due8.setImageResource(R.drawable.recensione_si);
@@ -303,6 +467,9 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valDivertimento = 3;
+                divertimento.setBackgroundResource(0);
+
+
                 uno8.setImageResource(R.drawable.recensione_si);
                 due8.setImageResource(R.drawable.recensione_si);
                 tre8.setImageResource(R.drawable.recensione_si);
@@ -314,6 +481,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valDivertimento = 4;
+                divertimento.setBackgroundResource(0);
+
                 uno8.setImageResource(R.drawable.recensione_si);
                 due8.setImageResource(R.drawable.recensione_si);
                 tre8.setImageResource(R.drawable.recensione_si);
@@ -325,6 +494,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valDivertimento = 5;
+                divertimento.setBackgroundResource(0);
                 uno8.setImageResource(R.drawable.recensione_si);
                 due8.setImageResource(R.drawable.recensione_si);
                 tre8.setImageResource(R.drawable.recensione_si);
@@ -346,6 +516,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valPrezzi = 1;
+                prezzi.setBackgroundResource(0);
                 uno7.setImageResource(R.drawable.recensione_si);
                 due7.setImageResource(R.drawable.recensione_no);
                 tre7.setImageResource(R.drawable.recensione_no);
@@ -356,7 +527,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         due7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                valPrezzi = 2;
+                valPrezzi = 2;                prezzi.setBackgroundResource(0);
+
                 uno7.setImageResource(R.drawable.recensione_si);
                 due7.setImageResource(R.drawable.recensione_si);
                 tre7.setImageResource(R.drawable.recensione_no);
@@ -367,7 +539,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         tre7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                valPrezzi = 3;
+                valPrezzi = 3;                prezzi.setBackgroundResource(0);
+
                 uno7.setImageResource(R.drawable.recensione_si);
                 due7.setImageResource(R.drawable.recensione_si);
                 tre7.setImageResource(R.drawable.recensione_si);
@@ -378,7 +551,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         quattro7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                valPrezzi = 4;
+                valPrezzi = 4;                prezzi.setBackgroundResource(0);
+
                 uno7.setImageResource(R.drawable.recensione_si);
                 due7.setImageResource(R.drawable.recensione_si);
                 tre7.setImageResource(R.drawable.recensione_si);
@@ -389,7 +563,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         cinque7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                valPrezzi = 5;
+                valPrezzi = 5;                prezzi.setBackgroundResource(0);
+
                 uno7.setImageResource(R.drawable.recensione_si);
                 due7.setImageResource(R.drawable.recensione_si);
                 tre7.setImageResource(R.drawable.recensione_si);
@@ -402,6 +577,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     ImageView uno6,due6,tre6,quattro6,cinque6;
     TextView textView;
     ConstraintLayout maschileLayout,femminileLayout;
+
     private void setRagazze() {
         uno6 = (ImageView) findViewById(R.id.imageView4845);
         due6 = (ImageView) findViewById(R.id.imageView4945);
@@ -409,8 +585,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         quattro6 = (ImageView) findViewById(R.id.imageView5145);
         cinque6 = (ImageView) findViewById(R.id.imageView5245);
         textView = (TextView) findViewById(R.id.textView6933345);
-        maschileLayout = (ConstraintLayout) findViewById(R.id.entrambi);
-        femminileLayout = (ConstraintLayout) findViewById(R.id.constRagazze);
+        maschileLayout = (ConstraintLayout) findViewById(R.id.cRagazzi);
+        femminileLayout = (ConstraintLayout) findViewById(R.id.cRagazze);
         firebaseFirestore.collection("Pubblico").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -435,6 +611,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazze = 1;
+                ragazze.setBackgroundResource(0);
+
                 uno6.setImageResource(R.drawable.recensione_si);
                 due6.setImageResource(R.drawable.recensione_no);
                 tre6.setImageResource(R.drawable.recensione_no);
@@ -446,6 +624,9 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazze = 2;
+
+                ragazze.setBackgroundResource(0);
+
                 uno6.setImageResource(R.drawable.recensione_si);
                 due6.setImageResource(R.drawable.recensione_si);
                 tre6.setImageResource(R.drawable.recensione_no);
@@ -457,6 +638,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazze = 3;
+                ragazze.setBackgroundResource(0);
+
                 uno6.setImageResource(R.drawable.recensione_si);
                 due6.setImageResource(R.drawable.recensione_si);
                 tre6.setImageResource(R.drawable.recensione_si);
@@ -468,6 +651,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazze = 4;
+                ragazze.setBackgroundResource(0);
+
                 uno6.setImageResource(R.drawable.recensione_si);
                 due6.setImageResource(R.drawable.recensione_si);
                 tre6.setImageResource(R.drawable.recensione_si);
@@ -479,6 +664,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazze = 5;
+                ragazze.setBackgroundResource(0);
+
                 uno6.setImageResource(R.drawable.recensione_si);
                 due6.setImageResource(R.drawable.recensione_si);
                 tre6.setImageResource(R.drawable.recensione_si);
@@ -502,6 +689,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazzi = 1;
+                regazzi.setBackgroundResource(0);
+
                 uno10.setImageResource(R.drawable.recensione_si);
                 due10.setImageResource(R.drawable.recensione_no);
                 tre10.setImageResource(R.drawable.recensione_no);
@@ -513,6 +702,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazzi = 2;
+                regazzi.setBackgroundResource(0);
+
                 uno10.setImageResource(R.drawable.recensione_si);
                 due10.setImageResource(R.drawable.recensione_si);
                 tre10.setImageResource(R.drawable.recensione_no);
@@ -524,6 +715,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazzi = 3;
+                regazzi.setBackgroundResource(0);
+
                 uno10.setImageResource(R.drawable.recensione_si);
                 due10.setImageResource(R.drawable.recensione_si);
                 tre10.setImageResource(R.drawable.recensione_si);
@@ -534,7 +727,9 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         quattro10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                regazzi.setBackgroundResource(0);
                 valRagazzi = 4;
+
                 uno10.setImageResource(R.drawable.recensione_si);
                 due10.setImageResource(R.drawable.recensione_si);
                 tre10.setImageResource(R.drawable.recensione_si);
@@ -546,6 +741,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valRagazzi = 5;
+                regazzi.setBackgroundResource(0);
+
                 uno10.setImageResource(R.drawable.recensione_si);
                 due10.setImageResource(R.drawable.recensione_si);
                 tre10.setImageResource(R.drawable.recensione_si);
@@ -568,6 +765,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valQuantitaPersone = 1;
+                quantitaGente.setBackgroundResource(0);
+
                 uno5.setImageResource(R.drawable.recensione_si);
                 due5.setImageResource(R.drawable.recensione_no);
                 tre5.setImageResource(R.drawable.recensione_no);
@@ -579,6 +778,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valQuantitaPersone = 2;
+                quantitaGente.setBackgroundResource(0);
+
                 uno5.setImageResource(R.drawable.recensione_si);
                 due5.setImageResource(R.drawable.recensione_si);
                 tre5.setImageResource(R.drawable.recensione_no);
@@ -590,6 +791,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valQuantitaPersone = 3;
+                quantitaGente.setBackgroundResource(0);
+
                 uno5.setImageResource(R.drawable.recensione_si);
                 due5.setImageResource(R.drawable.recensione_si);
                 tre5.setImageResource(R.drawable.recensione_si);
@@ -601,6 +804,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valQuantitaPersone = 4;
+                quantitaGente.setBackgroundResource(0);
+
                 uno5.setImageResource(R.drawable.recensione_si);
                 due5.setImageResource(R.drawable.recensione_si);
                 tre5.setImageResource(R.drawable.recensione_si);
@@ -612,6 +817,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valQuantitaPersone = 5;
+                quantitaGente.setBackgroundResource(0);
                 uno5.setImageResource(R.drawable.recensione_si);
                 due5.setImageResource(R.drawable.recensione_si);
                 tre5.setImageResource(R.drawable.recensione_si);
@@ -634,6 +840,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valBagni = 1;
+                bagni.setBackgroundResource(0);
                 uno4.setImageResource(R.drawable.recensione_si);
                 due4.setImageResource(R.drawable.recensione_no);
                 tre4.setImageResource(R.drawable.recensione_no);
@@ -645,6 +852,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valBagni = 2;
+                bagni.setBackgroundResource(0);
                 uno4.setImageResource(R.drawable.recensione_si);
                 due4.setImageResource(R.drawable.recensione_si);
                 tre4.setImageResource(R.drawable.recensione_no);
@@ -656,6 +864,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valBagni = 3;
+                bagni.setBackgroundResource(0);
                 uno4.setImageResource(R.drawable.recensione_si);
                 due4.setImageResource(R.drawable.recensione_si);
                 tre4.setImageResource(R.drawable.recensione_si);
@@ -667,6 +876,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valBagni = 4;
+                bagni.setBackgroundResource(0);
                 uno4.setImageResource(R.drawable.recensione_si);
                 due4.setImageResource(R.drawable.recensione_si);
                 tre4.setImageResource(R.drawable.recensione_si);
@@ -678,6 +888,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valBagni = 5;
+                bagni.setBackgroundResource(0);
                 uno4.setImageResource(R.drawable.recensione_si);
                 due4.setImageResource(R.drawable.recensione_si);
                 tre4.setImageResource(R.drawable.recensione_si);
@@ -699,6 +910,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valServizio = 1;
+                servizio.setBackgroundResource(0);
                 uno3.setImageResource(R.drawable.recensione_si);
                 due3.setImageResource(R.drawable.recensione_no);
                 tre3.setImageResource(R.drawable.recensione_no);
@@ -710,6 +922,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valServizio = 2;
+                servizio.setBackgroundResource(0);
                 uno3.setImageResource(R.drawable.recensione_si);
                 due3.setImageResource(R.drawable.recensione_si);
                 tre3.setImageResource(R.drawable.recensione_no);
@@ -721,6 +934,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valServizio = 3;
+                servizio.setBackgroundResource(0);
                 uno3.setImageResource(R.drawable.recensione_si);
                 due3.setImageResource(R.drawable.recensione_si);
                 tre3.setImageResource(R.drawable.recensione_si);
@@ -732,6 +946,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valServizio = 4;
+                servizio.setBackgroundResource(0);
                 uno3.setImageResource(R.drawable.recensione_si);
                 due3.setImageResource(R.drawable.recensione_si);
                 tre3.setImageResource(R.drawable.recensione_si);
@@ -743,6 +958,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valServizio = 5;
+                servizio.setBackgroundResource(0);
                 uno3.setImageResource(R.drawable.recensione_si);
                 due3.setImageResource(R.drawable.recensione_si);
                 tre3.setImageResource(R.drawable.recensione_si);
@@ -765,6 +981,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valProdotti = 1;
+                prodotti.setBackgroundResource(0);
                 uno2.setImageResource(R.drawable.recensione_si);
                 due2.setImageResource(R.drawable.recensione_no);
                 tre2.setImageResource(R.drawable.recensione_no);
@@ -776,6 +993,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valProdotti = 2;
+                prodotti.setBackgroundResource(0);
                 uno2.setImageResource(R.drawable.recensione_si);
                 due2.setImageResource(R.drawable.recensione_si);
                 tre2.setImageResource(R.drawable.recensione_no);
@@ -787,6 +1005,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valProdotti = 3;
+                prodotti.setBackgroundResource(0);
                 uno2.setImageResource(R.drawable.recensione_si);
                 due2.setImageResource(R.drawable.recensione_si);
                 tre2.setImageResource(R.drawable.recensione_si);
@@ -798,6 +1017,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valProdotti = 4;
+                prodotti.setBackgroundResource(0);
                 uno2.setImageResource(R.drawable.recensione_si);
                 due2.setImageResource(R.drawable.recensione_si);
                 tre2.setImageResource(R.drawable.recensione_si);
@@ -809,6 +1029,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valProdotti = 5;
+                prodotti.setBackgroundResource(0);
                 uno2.setImageResource(R.drawable.recensione_si);
                 due2.setImageResource(R.drawable.recensione_si);
                 tre2.setImageResource(R.drawable.recensione_si  );
@@ -830,6 +1051,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valStruttura = 1;
+                strutura.setBackgroundResource(0);
                 uno1.setImageResource( R.drawable.recensione_si );
                 due1.setImageResource( R.drawable.recensione_no );
                 tre1.setImageResource( R.drawable.recensione_no );
@@ -841,6 +1063,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valStruttura = 2;
+                strutura.setBackgroundResource(0);
+
                 uno1.setImageResource( R.drawable.recensione_si );
                 due1.setImageResource( R.drawable.recensione_si );
                 tre1.setImageResource( R.drawable.recensione_no );
@@ -852,6 +1076,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valStruttura = 3;
+                strutura.setBackgroundResource(0);
+
                 uno1.setImageResource( R.drawable.recensione_si );
                 due1.setImageResource( R.drawable.recensione_si );
                 tre1.setImageResource( R.drawable.recensione_si );
@@ -864,6 +1090,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valStruttura = 4;
+                strutura.setBackgroundResource(0);
+
                 uno1.setImageResource( R.drawable.recensione_si );
                 due1.setImageResource( R.drawable.recensione_si );
                 tre1.setImageResource( R.drawable.recensione_si );
@@ -875,6 +1103,9 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 valStruttura = 5;
+                strutura.setBackgroundResource(0);
+
+
                 uno1.setImageResource( R.drawable.recensione_si );
                 due1.setImageResource( R.drawable.recensione_si );
                 tre1.setImageResource( R.drawable.recensione_si );

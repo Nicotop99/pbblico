@@ -2,6 +2,7 @@ package com.pubmania.Pubblico.Array;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,9 @@ public class ArrayRecensioniDisponibili extends ArrayAdapter<StringRecensioni> {
         TextView textView = (TextView) view.findViewById( R.id.textView52 );
         TextView email = (TextView) view.findViewById( R.id.textView56 );
         TextView idPost = (TextView) view.findViewById(R.id.textView69);
+        TextView token = (TextView) view.findViewById(R.id.textView72);
+        Log.d("kfmsldkmfk",stringRecensioni.getToken());
+        token.setText(stringRecensioni.getToken());
         idPost.setText(stringRecensioni.getId());
         email.setText( stringRecensioni.getEmailPub() );
 
