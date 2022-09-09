@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NavUtils;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -49,13 +50,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.pubmania.Pubblico.Array.ArrayIngredienti;
 import com.pubmania.Pubblico.Array.ArrayProdotti;
 import com.pubmania.Pubblico.Array.ArraySearchprodotti;
+import com.pubmania.Pubblico.String.StringCoutVisite;
 import com.pubmania.Pubblico.String.StringPost_coupon;
 import com.pubmania.Pubblico.String.StringProdotto;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Profile_Pub extends AppCompatActivity {
 
@@ -77,7 +83,13 @@ public class Profile_Pub extends AppCompatActivity {
         setSearch();
         setTop();
         setButtonprofile();
+        setVisite();
+
         locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+    }
+
+    private void setVisite() {
+
     }
 
 
@@ -117,7 +129,13 @@ public class Profile_Pub extends AppCompatActivity {
                                 documentReference.update( String.valueOf( followeInt ), emailPub ).addOnCompleteListener( new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-
+                                        Map<String, Object> user = new HashMap<>();
+                                        user.put("emailCliente", email);
+                                        user.put("emailPub", emailPub);
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                                        String currentDateandTime = sdf.format(new Date());
+                                        user.put( "ora" ,currentDateandTime);
+                                        firebaseFirestore.collection( emailPub+"follower" ).add( user );
                                     }
                                 } ).addOnFailureListener( new OnFailureListener() {
                                     @Override
@@ -157,7 +175,19 @@ public class Profile_Pub extends AppCompatActivity {
                                 documentReference.update( String.valueOf( followeInt ), "" ).addOnCompleteListener( new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-
+                                        firebaseFirestore.collection( emailPub+"follower" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if(task.isSuccessful()){
+                                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                                        if(documentSnapshot.getString( "emailCliente" ).equals( email )){
+                                                            DocumentReference documentReference1 = firebaseFirestore.collection( emailPub+"follower" ).document(documentSnapshot.getId());
+                                                            documentReference1.delete();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } );
                                     }
                                 } ).addOnFailureListener( new OnFailureListener() {
                                     @Override
@@ -360,20 +390,10 @@ public class Profile_Pub extends AppCompatActivity {
 
 
     TextView followe,recensioni;
+    boolean segui = false;
     private void setTop() {
         followe = (TextView) findViewById( R.id.textView18 );
-        firebaseFirestore.collection( "Professionisti" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task != null){
-                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                        if(documentSnapshot.getString( "email" ).equals( emailPub )){
-                            followe.setText( documentSnapshot.getString( "follower" ) + " follower");
-                        }
-                    }
-                }
-            }
-        } );
+
         firebaseFirestore.collection( email+"follower" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -386,15 +406,52 @@ public class Profile_Pub extends AppCompatActivity {
                             if(documentSnapshot.getData().get( String.valueOf( l ) ) != null) {
                                 if (documentSnapshot.getData().get( String.valueOf( l ) ).equals( emailPub )) {
                                     seguiText.setText( getString( R.string.smettidiseguire ) );
-
+                                    segui = true;
                                 } else {
                                     seguiText.setText( getString( R.string.segui ) );
-
+                                    segui = false;
                                 }
                             }
                         }
 
                     }
+                    firebaseFirestore.collection( "Professionisti" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task != null){
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                    if(documentSnapshot.getString( "email" ).equals( emailPub )){
+                                        followe.setText( documentSnapshot.getString( "follower" ) + " follower");
+                                        DocumentReference documentReference = firebaseFirestore.collection( "Professionisti" ).document(documentSnapshot.getId());
+
+                                        if(documentSnapshot.getString( "personeCheTiHannoVisitato" ) == null){
+                                            documentReference.update( "personeCheTiHannoVisitato","1" );
+                                        }else{
+                                            int person = Integer.parseInt( documentSnapshot.getString( "personeCheTiHannoVisitato" ) ) + 1;
+
+                                            documentReference.update( "personeCheTiHannoVisitato",String.valueOf( person ) );
+                                        }
+                                        StringCoutVisite stringCoutVisite = new StringCoutVisite(  );
+                                        stringCoutVisite.setEmailCliente( email );
+                                        stringCoutVisite.setEmailPub( emailPub );
+                                        stringCoutVisite.setTisegue( String.valueOf( segui ) );
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                                        String currentDateandTime = sdf.format(new Date());
+                                        stringCoutVisite.setOra( currentDateandTime );
+                                        firebaseFirestore.collection( emailPub+"Dash" ).add( stringCoutVisite ).addOnCompleteListener( new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if(task.isSuccessful()){
+                                                    DocumentReference documentReference1 = firebaseFirestore.collection( emailPub+ "Dash" ).document(task.getResult().getId());
+                                                    documentReference1.update( "id",task.getResult().getId() );
+                                                }
+                                            }
+                                        } );
+                                    }
+                                }
+                            }
+                        }
+                    } );
                 }
             }
         } );
