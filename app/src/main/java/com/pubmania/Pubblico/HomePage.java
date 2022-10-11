@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -119,7 +120,9 @@ BottomNavigationView bottomAppBar;
     int count,in;
     ArrayList<String> arrEmail =  new ArrayList<>();
     int coEmail = 0;
-
+    ArrayList<String> idAray = new ArrayList<>();
+    int moltiplic = 5;
+    ArrayList<StringPost_coupon> arayPost = new ArrayList();
     ArrayHome arrayHome;
     private void setListView() {
         listView = (ListView) findViewById( R.id.list_home );
@@ -144,6 +147,168 @@ BottomNavigationView bottomAppBar;
                         }
 
                     }
+                    for (int i = 0;i<arrEmail.size();i++){
+                        Log.d( "fnsjldsdnflnsd",arayPost.size() + " " + moltiplic );
+                        if(arayPost.size() < moltiplic){
+                            Log.d( "fnsjldsdnflnsd","2" );
+                            Log.d( "fnsjldsdnflnsd",arrEmail.get( i ) );
+
+                            int finalI = i;
+                            firebaseFirestore.collection( arrEmail.get( i ) +"Post").get().addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    if(!queryDocumentSnapshots.isEmpty()){
+                                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                                        for (DocumentSnapshot documentSnapshot : list){
+                                            if(arayPost.size() < moltiplic){
+                                                StringPost_coupon stringPost_coupon = documentSnapshot.toObject(StringPost_coupon.class);
+                                                arayPost.add( stringPost_coupon );
+                                                arrayHome = new ArrayHome( HomePage.this,  arayPost,email);
+                                                listView.setAdapter( arrayHome );
+                                                idAray.add( stringPost_coupon.getId() );
+
+
+                                                listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+                                                    @Override
+                                                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+                                                        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+                                                                && (listView.getLastVisiblePosition() - listView.getHeaderViewsCount() -
+                                                                listView.getFooterViewsCount()) >= (arrayHome.getCount() - 1)) {
+                                                            if(arayPost.size() == moltiplic) {
+                                                                moltiplic += 5;
+                                                                Log.d( "kkkkkkdkdkdkdkd", "unoo" );
+                                                                firebaseFirestore.collection( arrEmail.get( finalI ) + "Post" ).get().addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                                        if (!queryDocumentSnapshots.isEmpty()) {
+                                                                            Log.d( "kkkkkkdkdkdkdkd", "dueeee" );
+
+                                                                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                                                                            for (DocumentSnapshot documentSnapshot : list) {
+                                                                                Log.d( "kkkkkkdkdkdkdkd", "treee" );
+
+                                                                                if (arayPost.size() < moltiplic && !idAray.contains( documentSnapshot.getId() )) {
+                                                                                    Log.d( "kkkkkkdkdkdkdkd", "quattrooo" );
+                                                                                    StringPost_coupon stringPost_coupon = documentSnapshot.toObject( StringPost_coupon.class );
+                                                                                    arayPost.add( stringPost_coupon );
+                                                                                    arrayHome.notifyDataSetChanged();
+                                                                                    idAray.add( stringPost_coupon.getId() );
+                                                                                    flag_loading = false;
+
+
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                } ).addOnFailureListener( new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.d( "oflsdf", e.getMessage() );
+                                                                    }
+                                                                } );
+                                                            }
+
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                                                    }
+                                                });
+
+
+/*
+                                                listView.setOnScrollListener( new AbsListView.OnScrollListener() {
+                                                    @Override
+                                                    public void onScrollStateChanged(AbsListView absListView, int i) {
+                                                        Log.d( "fmdlfmlmsdfk", String.valueOf( absListView.getScrollY() ) );
+                                                    }
+
+                                                    @Override
+                                                    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                                                        Log.d( "fmdlfmlmsdfk", String.valueOf( absListView.getScrollY() + " fnfjfjjf") );
+
+
+
+                                                        if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
+                                                        {
+                                                            Log.d( "jffndskjfjk","primo" );
+                                                            if(flag_loading == false) {
+                                                                moltiplic += 5;
+
+                                                                Log.d( "jffndskjfjk","sec" );
+
+                                                                firebaseFirestore.collection( arrEmail.get( finalI ) +"Post").get().addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                                        if(!queryDocumentSnapshots.isEmpty()){
+                                                                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                                                                            for (DocumentSnapshot documentSnapshot : list){
+                                                                                if(arayPost.size() < moltiplic){
+                                                                                    StringPost_coupon stringPost_coupon = documentSnapshot.toObject(StringPost_coupon.class);
+                                                                                    arayPost.add( stringPost_coupon );
+                                                                                    arrayHome = new ArrayHome( HomePage.this,  arayPost,email);
+                                                                                    listView.setAdapter( arrayHome );
+                                                                                    flag_loading = false;
+
+
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                } ).addOnFailureListener( new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.d( "oflsdf",e.getMessage() );
+                                                                    }
+                                                                } );
+
+                                                            }
+
+
+
+                                                        }
+                                                        else{
+                                                            Log.d( "jffndskjfjk","terzz" );
+
+                                                            flag_loading = false;
+                                                        }
+
+
+
+
+                                                    }
+                                                } );
+
+
+
+ */
+
+
+
+                                            }
+                                        }
+
+                                    }
+                                }
+                            } ).addOnFailureListener( new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d( "oflsdf",e.getMessage() );
+                                }
+                            } );
+
+                        }else if(arayPost.size() == moltiplic){
+                            moltiplic += 5;
+                            Log.d( "fnsjldsdnflnsd","3" );
+
+                        }
+
+                    }
+
+                    /*
                     firebaseFirestore.collection( "Professionisti" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -166,6 +331,7 @@ BottomNavigationView bottomAppBar;
                                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                                 if(queryDocumentSnapshots.size() <5){
                                                     Log.d( "ofodsofosdf","1" );
+                                                    Log.d( "ofodsofdddddddddddddddddddddosdf","1" );
 
                                                     for (int i = 0; i< arrEmail.size(); i++){
                                                         Log.d( "ofodsofosdf",arrEmail.get( i ) );
@@ -327,7 +493,7 @@ BottomNavigationView bottomAppBar;
                                                                                                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                                                                                                     for (DocumentSnapshot documentSnapshot1 : list) {
                                                                                                         in +=1;
-                                                                                                        Log.d( "kmfdskòmfò",documentSnapshot1.getString( "titolo" ) );
+
                                                                                                         if(count < in){
                                                                                                             Log.d( "kmsadò",count + " " + in );
 
@@ -479,12 +645,19 @@ BottomNavigationView bottomAppBar;
                                 }
                             }
                         }
-                    } ).addOnFailureListener( new OnFailureListener() {
+                    } )
+                            .addOnFailureListener( new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.d( "errorrrrr",e.getMessage()+" aa" );
                         }
                     } );
+
+
+                     */
+
+
+
 
                 }
             }
@@ -494,6 +667,12 @@ BottomNavigationView bottomAppBar;
                 Log.d( "errorrrrr",e.getMessage()+" cc" );
             }
         } );
+
+
+
+
+
+
 
     }
 }

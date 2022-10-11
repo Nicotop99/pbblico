@@ -91,7 +91,7 @@ int count = 5;
 
                 if (task != null) {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                        Log.d( "ofmsdklm",stringPost_coupon.getEmail() );
+
 
                         if(stringPost_coupon.getEmail().equals( documentSnapshot.getString( "email" ) )) {
                             emailPub = documentSnapshot.getString( "email" );
