@@ -33,6 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.pubmania.Pubblico.String.StringNotifiche;
 import com.pubmania.Pubblico.String.StringRecensione;
 
 import org.json.JSONException;
@@ -48,6 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.pubmania.Pubblico.FaiUnaRecensione.emailPub;
 import static com.pubmania.Pubblico.FaiUnaRecensione.idPost;
 import static com.pubmania.Pubblico.FaiUnaRecensione.token;
 
@@ -74,8 +76,22 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         setPrezzi();
         setDivertimento();
         setRecensisci();
+        firebaseFirestore.collection("Pubblico").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                        if(documentSnapshot.getString("email").equals(email)){
+                           uriProfilo = documentSnapshot.getString("fotoProfilo");
+                            nomeCognome = documentSnapshot.getString("nome") + " " + documentSnapshot.getString("cognome");
+                        }
+                    }
+                }
+            }
+        });
     }
 
+    String nomeCognome,uriProfilo;
     ImageView faiRecensione;
     ArrayList<String> arrayUrl = new ArrayList<>();
     Group group1,group2;
@@ -83,7 +99,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     int countMedia,countTot,media;
     ConstraintLayout strutura,prodotti,servizio,bagni,quantitaGente,ragazze,regazzi,prezzi,divertimento;
     final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
-    final private String serverKey = "key=" + "AAAAz6Q0rzc:APA91bHLB3SMR7R4K9gtfjSocQ9BhA8Ilh5p7O0sLU12qhRYdY9NQ-xiD1qQmQn1lA84ArFF9uORaMBghY2gdx8cZiejNG7xwLgoC4hvfiNNY0Hy8cE6uKdHclBw3uVWjhTa_1cyxuIA";
+    final private String serverKey = "key=" + "AAAAbWZozX0:APA91bElDXMdAF898t_M5ai0z5cCTkG9po-deDqqirLm5zL9FI_UgxdQtlUdH0k7fToZIClrylH5LXbEZeVXsXpbr1rpYj6FpD20mFTLOVot-YbiYjhSf85Ca7qbHI9zzCCh0nCktwYF";
     final private String contentType = "application/json";
     final String TAG = "NOTIFICATION TAG";
     String TOPIC;
@@ -95,7 +111,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
         try {
-            notifcationBody.put("title", getString(R.string.nuovarecensioneda));
+            notifcationBody.put("title", getString(R.string.nuovarecensioneda) + " " + nomeCognome );
             notifcationBody.put("message", getString(R.string.cliccalanotificaperidettagli));
             notifcationBody.put("tipo","Recensione");
             notifcationBody.put("idPost",idPost);
@@ -116,8 +132,40 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        startActivity(new Intent(getApplicationContext(), ProfiloPubblico.class));
-                        finish();
+
+
+                        StringNotifiche stringNotifiche = new StringNotifiche();
+                        stringNotifiche.setCategoria("Recensione");
+                        stringNotifiche.setEmailCliente(email);
+                        stringNotifiche.setEmailPub(emailPub);
+                        stringNotifiche.setFotoProfilo(uriProfilo);
+                        stringNotifiche.setIdPost(idPost);
+                        stringNotifiche.setNomecognomeCliente(nomeCognome);
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                        String currentDateandTime = sdf.format(new Date());
+                        stringNotifiche.setOra(currentDateandTime);
+                        firebaseFirestore.collection(emailPub+"Notifiche").add(stringNotifiche)
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if(task.isSuccessful()){
+                                                    DocumentReference documentReference = task.getResult();
+                                                    documentReference.update("id",task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                            startActivity(new Intent(getApplicationContext(), ProfiloPubblico.class));
+                                                            finish();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+
+
+
+
+
                     }
                 },
                 new Response.ErrorListener() {

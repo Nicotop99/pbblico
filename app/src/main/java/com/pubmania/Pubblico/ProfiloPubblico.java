@@ -49,6 +49,7 @@ public class ProfiloPubblico extends AppCompatActivity {
         setecensioniDisponibili();
         setProfile();
 
+        Log.e("dljsnadjnas","dijsoajdi");
 
 
     }
@@ -85,11 +86,14 @@ public class ProfiloPubblico extends AppCompatActivity {
     ArrayList<StringRecensioni> arrayString = new ArrayList<>();
     ArrayRecensioniDisponibili arrayRecensioniDisponibili;
     private void setecensioniDisponibili() {
+        Log.e("dljsnadjnas","dijsoajdi");
+
         gridView = (GridView) findViewById( R.id.gridView );
         firebaseFirestore.collection( email+"Rec" ).get().addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if(!queryDocumentSnapshots.isEmpty()){
+                    Log.d("dljsnadjnas","dijsoajdi");
                     List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                     for (DocumentSnapshot documentSnapshot : list){
                         StringRecensioni stringRecensioni = documentSnapshot.toObject( StringRecensioni.class );
@@ -113,6 +117,9 @@ public class ProfiloPubblico extends AppCompatActivity {
 
 
                     }
+                }
+                else{
+                    Log.d("ojfnkfnsdn","odnsjandl");
                 }
             }
         } );

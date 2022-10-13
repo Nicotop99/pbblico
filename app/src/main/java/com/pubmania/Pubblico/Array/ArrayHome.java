@@ -26,6 +26,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,6 +84,7 @@ int count = 5;
         TextView nomePubPost = (TextView) view.findViewById( R.id.textView12 );
         ImageSlider postImage = (ImageSlider) view.findViewById( R.id.image_slider );
         CircleImageView photoProfilePost = (CircleImageView) view.findViewById( R.id.circleImageView2 );
+        Log.d("jjjjjjjjj","primo");
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection( "Professionisti" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
@@ -96,13 +98,14 @@ int count = 5;
                         if(stringPost_coupon.getEmail().equals( documentSnapshot.getString( "email" ) )) {
                             emailPub = documentSnapshot.getString( "email" );
                             uri = documentSnapshot.getString( "fotoProfilo" );
+                            Log.d("dndmdmmd" ,uri);
                             nomePub = documentSnapshot.getString( "nomeLocale" );
                             Log.d( "osefmodsf",nomePub + "a" );
                             textView.setText( emailPub );
                             PackageManager packageManager = context.getPackageManager();
                             try {
                                 ActivityInfo info = packageManager.getActivityInfo(context.getComponentName(), 0);
-                                Log.e("ssfdsfsdfsdf", "Activity name:" + info.name);
+                                Log.e("ssfdsfsdfsdf", "Activity name:" + info.packageName);
 
                                 if(info.name.equals( "com.pubmania.Pubblico.HomePage" )){
                                     Glide.with( context ).load( uri  ).into( photoProfilePost );
@@ -112,6 +115,7 @@ int count = 5;
 
                             } catch (PackageManager.NameNotFoundException e) {
                                 e.printStackTrace();
+                                Log.d("Ojdnkjsadja",e.getMessage());
                             }
 
                             nomePubPost.setText( nomePub );
@@ -121,7 +125,12 @@ int count = 5;
                     }
                 }
             }
-        } );
+        } ).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("jjjjjjjjj",e.getMessage());
+            }
+        });
 
         ImageView plusBotton = (ImageView) view.findViewById( R.id.imageView27 );
 

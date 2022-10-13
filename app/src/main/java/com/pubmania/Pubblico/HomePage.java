@@ -217,74 +217,17 @@ BottomNavigationView bottomAppBar;
 
                                                     }
                                                 });
-
-
-/*
-                                                listView.setOnScrollListener( new AbsListView.OnScrollListener() {
+                                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                     @Override
-                                                    public void onScrollStateChanged(AbsListView absListView, int i) {
-                                                        Log.d( "fmdlfmlmsdfk", String.valueOf( absListView.getScrollY() ) );
+                                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                                        TextView textView = (TextView) view.findViewById( R.id.textView16 );
+                                                        String emailPub = textView.getText().toString();
+                                                        Intent intent = new Intent(getApplicationContext(),Profile_Pub.class);
+                                                        intent.putExtra("emailPub",emailPub);
+                                                        startActivity(intent);
                                                     }
+                                                });
 
-                                                    @Override
-                                                    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                                                        Log.d( "fmdlfmlmsdfk", String.valueOf( absListView.getScrollY() + " fnfjfjjf") );
-
-
-
-                                                        if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
-                                                        {
-                                                            Log.d( "jffndskjfjk","primo" );
-                                                            if(flag_loading == false) {
-                                                                moltiplic += 5;
-
-                                                                Log.d( "jffndskjfjk","sec" );
-
-                                                                firebaseFirestore.collection( arrEmail.get( finalI ) +"Post").get().addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
-                                                                    @Override
-                                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                                        if(!queryDocumentSnapshots.isEmpty()){
-                                                                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                                                                            for (DocumentSnapshot documentSnapshot : list){
-                                                                                if(arayPost.size() < moltiplic){
-                                                                                    StringPost_coupon stringPost_coupon = documentSnapshot.toObject(StringPost_coupon.class);
-                                                                                    arayPost.add( stringPost_coupon );
-                                                                                    arrayHome = new ArrayHome( HomePage.this,  arayPost,email);
-                                                                                    listView.setAdapter( arrayHome );
-                                                                                    flag_loading = false;
-
-
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                } ).addOnFailureListener( new OnFailureListener() {
-                                                                    @Override
-                                                                    public void onFailure(@NonNull Exception e) {
-                                                                        Log.d( "oflsdf",e.getMessage() );
-                                                                    }
-                                                                } );
-
-                                                            }
-
-
-
-                                                        }
-                                                        else{
-                                                            Log.d( "jffndskjfjk","terzz" );
-
-                                                            flag_loading = false;
-                                                        }
-
-
-
-
-                                                    }
-                                                } );
-
-
-
- */
 
 
 
