@@ -103,7 +103,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     final private String contentType = "application/json";
     final String TAG = "NOTIFICATION TAG";
     String TOPIC;
-    private void propvaNotifica(String token, String idPost) {
+    private void propvaNotifica(String token, String idPosttt) {
 
         TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
 
@@ -114,20 +114,20 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             notifcationBody.put("title", getString(R.string.nuovarecensioneda) + " " + nomeCognome );
             notifcationBody.put("message", getString(R.string.cliccalanotificaperidettagli));
             notifcationBody.put("tipo","Recensione");
-            notifcationBody.put("idPost",idPost);
+            notifcationBody.put("idPost",idPosttt);
             notification.put("to", token);
             notification.put("data", notifcationBody);
         } catch (JSONException e) {
             Log.e(TAG, "onCreate: " + e.getMessage() );
         }
-        sendNotification(notification);
+        sendNotification(notification,idPosttt);
 
 
 
 
     }
 
-    private void sendNotification(JSONObject notification) {
+    private void sendNotification(JSONObject notification,String idPostt) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
@@ -136,10 +136,11 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
 
                         StringNotifiche stringNotifiche = new StringNotifiche();
                         stringNotifiche.setCategoria("Recensione");
+                        stringNotifiche.setVisualizzato("false");
                         stringNotifiche.setEmailCliente(email);
                         stringNotifiche.setEmailPub(emailPub);
                         stringNotifiche.setFotoProfilo(uriProfilo);
-                        stringNotifiche.setIdPost(idPost);
+                        stringNotifiche.setIdPost(idPostt);
                         stringNotifiche.setNomecognomeCliente(nomeCognome);
                         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
                         String currentDateandTime = sdf.format(new Date());

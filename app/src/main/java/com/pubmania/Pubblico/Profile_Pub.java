@@ -80,7 +80,7 @@ public class Profile_Pub extends AppCompatActivity {
     String emailPub;
     String email;
     LocationManager locationManager;
-    String nomeCognomeee;
+    String nomeCognomeee,uriFoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -94,6 +94,7 @@ public class Profile_Pub extends AppCompatActivity {
                 if(task.isSuccessful()){
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
                         if (documentSnapshot.getString("email").equals(email)){
+                            uriFoto = documentSnapshot.getString("fotoProfilo");
                             nomeCognomeee = documentSnapshot.getString("nome") + " " + documentSnapshot.getString("cognome");
                         }
                     }
@@ -139,7 +140,7 @@ public class Profile_Pub extends AppCompatActivity {
                 if (seguiText.getText().toString().equals( getString( R.string.segui ) )) {
                     seguiText.setText( getString( R.string.smettidiseguire ) );
 
-
+                    Log.d("jndkjasndk",token);
                     propvaNotifica(token,"ddd");
 
                     firebaseFirestore.collection( email + "follower" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
@@ -182,7 +183,19 @@ public class Profile_Pub extends AppCompatActivity {
                     } );
                 } else {
                     seguiText.setText( getString( R.string.segui ) );
-
+                    firebaseFirestore.collection(emailPub+"Notifiche").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                    if(documentSnapshot.getString("categoria").equals("Follower") && documentSnapshot.getString("emailCliente").equals(email)){
+                                        DocumentReference documentReference = firebaseFirestore.collection(emailPub+"Notifiche").document(documentSnapshot.getId());
+                                        documentReference.delete();
+                                    }
+                                }
+                            }
+                        }
+                    });
                     firebaseFirestore.collection( email + "follower" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -448,9 +461,28 @@ public class Profile_Pub extends AppCompatActivity {
 
 
                         // ok
-
-
-
+                        StringNotifiche stringNotifiche = new StringNotifiche();
+                        stringNotifiche.setVisualizzato("false");
+                        stringNotifiche.setIdPost("");
+                        stringNotifiche.setFotoProfilo(uriFoto);
+                        stringNotifiche.setNomecognomeCliente(nomeCognomeee);
+                        stringNotifiche.setCategoria("Follower");
+                        stringNotifiche.setEmailPub(emailPub);
+                        stringNotifiche.setEmailCliente(email);
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                        String currentDateandTime = sdf.format(new Date());
+                        stringNotifiche.setOra(currentDateandTime);
+                        firebaseFirestore.collection(emailPub + "Notifiche").add(stringNotifiche)
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if(task.isSuccessful()){
+                                                    DocumentReference documentReference = firebaseFirestore.collection(emailPub+"Notifiche").document(task.getResult().getId());
+                                                    documentReference.update("id",task.getResult().getId());
+                                                }
+                                            }
+                                        });
+                        Log.d("duiskajnd","djnsakd");
 
 
                     }

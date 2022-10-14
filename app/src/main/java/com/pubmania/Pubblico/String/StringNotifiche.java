@@ -1,7 +1,7 @@
 package com.pubmania.Pubblico.String;
 
 public class StringNotifiche {
-    String id,emailCliente,nomecognomeCliente,emailPub,ora,fotoProfilo,categoria,idPost;
+    String id,emailCliente,nomecognomeCliente,emailPub,ora,fotoProfilo,categoria,idPost,visualizzato;
 
 
     public StringNotifiche(){
@@ -9,8 +9,9 @@ public class StringNotifiche {
     }
 
     public StringNotifiche(String id, String emailCliente, String nomecognomeCliente,
-                           String emailPub, String ora, String fotoProfilo, String categoria,String idPost) {
+                           String emailPub, String ora, String fotoProfilo, String categoria,String idPost,String visualizzato) {
         this.id = id;
+        this.visualizzato = visualizzato;
         this.idPost = idPost;
         this.emailCliente = emailCliente;
         this.nomecognomeCliente = nomecognomeCliente;
@@ -18,6 +19,14 @@ public class StringNotifiche {
         this.ora = ora;
         this.fotoProfilo = fotoProfilo;
         this.categoria = categoria;
+    }
+
+    public String getVisualizzato() {
+        return visualizzato;
+    }
+
+    public void setVisualizzato(String visualizzato) {
+        this.visualizzato = visualizzato;
     }
 
     public String getIdPost() {
