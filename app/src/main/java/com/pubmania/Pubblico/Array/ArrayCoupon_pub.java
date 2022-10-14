@@ -41,14 +41,16 @@ public class ArrayCoupon_pub extends ArrayAdapter<StringPost_coupon> {
 
     Activity context;
     ArrayList<StringPost_coupon> arrayList;
-    String email,emailPub;
+    String email,emailPub,nome,token;
 
-    public ArrayCoupon_pub(@NonNull Context context, ArrayList<StringPost_coupon> arrayList,String email,String emailPub) {
+    public ArrayCoupon_pub(@NonNull Context context, ArrayList<StringPost_coupon> arrayList,String email,String emailPub,String nome,String token) {
         super( context, 0,  arrayList);
+        this.nome = nome;
         this.context = (Activity) context;
         this.arrayList = arrayList;
         this.email = email;
         this.emailPub = emailPub;
+        this.token = token;
     }
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     int followeInt;
@@ -138,7 +140,7 @@ public class ArrayCoupon_pub extends ArrayAdapter<StringPost_coupon> {
                                                                                 ImageView image = new ImageView( context );
                                                                                 Bitmap bitmap;
                                                                                 QRGEncoder qrgEncoder = new QRGEncoder(
-                                                                                        email + ":" + stringCoupon.getId()+":" + stringCoupon.getQuanteVolte()+":" + stringCoupon.getTipo() +":" + stringCoupon.getPrezzo() + ":" + stringCoupon.getQuanteVolte() + ":" + stringCoupon.getQualeProdotto() + ":" + stringCoupon.getToken(), null, QRGContents.Type.TEXT, 800 );
+                                                                                        email + ":" + stringCoupon.getId()+":" + stringCoupon.getQuanteVolte()+":" + stringCoupon.getTipo() +":" + stringCoupon.getPrezzo() + ":" + stringCoupon.getQuanteVolte() + ":" + stringCoupon.getQualeProdotto() + ":" + token+":" + nome, null, QRGContents.Type.TEXT, 800 );
                                                                                 try {
                                                                                     // Getting QR-Code as Bitmap
                                                                                     bitmap = qrgEncoder.encodeAsBitmap();
@@ -182,7 +184,7 @@ public class ArrayCoupon_pub extends ArrayAdapter<StringPost_coupon> {
 
                                             Bitmap bitmap;
                                             QRGEncoder qrgEncoder = new QRGEncoder(
-                                                    email + ":" + stringCoupon.getId()+":"+ stringCoupon.getQuanteVolte()+":" + stringCoupon.getTipo() +":" + stringCoupon.getPrezzo() + ":" + stringCoupon.getQuanteVolte() + ":" + stringCoupon.getQualeProdotto() + ":" + stringCoupon.getToken(), null, QRGContents.Type.TEXT, 800 );
+                                                    email + ":" + stringCoupon.getId()+":"+ stringCoupon.getQuanteVolte()+":" + stringCoupon.getTipo() +":" + stringCoupon.getPrezzo() + ":" + stringCoupon.getQuanteVolte() + ":" + stringCoupon.getQualeProdotto() + ":" + stringCoupon.getToken() +":" + nome, null, QRGContents.Type.TEXT, 800 );
                                             try {
                                                 // Getting QR-Code as Bitmap
                                                 bitmap = qrgEncoder.encodeAsBitmap();
@@ -220,7 +222,7 @@ public class ArrayCoupon_pub extends ArrayAdapter<StringPost_coupon> {
 
                     Bitmap bitmap;
                     QRGEncoder qrgEncoder = new QRGEncoder(
-                            email + ":" + stringCoupon.getId() + ":" + stringCoupon.getQuanteVolte()+":" + stringCoupon.getTipo() +":" + stringCoupon.getPrezzo() + ":" + stringCoupon.getQuanteVolte() + ":" + stringCoupon.getQualeProdotto() + ":" + stringCoupon.getToken(), null, QRGContents.Type.TEXT, 800 );
+                            email + ":" + stringCoupon.getId() + ":" + stringCoupon.getQuanteVolte()+":" + stringCoupon.getTipo() +":" + stringCoupon.getPrezzo() + ":" + stringCoupon.getQuanteVolte() + ":" + stringCoupon.getQualeProdotto() + ":" + stringCoupon.getToken() +":" + nome, null, QRGContents.Type.TEXT, 800 );
                     try {
                         // Getting QR-Code as Bitmap
                         bitmap = qrgEncoder.encodeAsBitmap();

@@ -56,7 +56,7 @@ import static com.pubmania.Pubblico.FaiUnaRecensione.token;
 public class FaiUnaRecensione2 extends AppCompatActivity {
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    String email;
+    String email,fotoCliente;
     String miPicc = "";
     int valStruttura,valProdotti,valServizio,valBagni,valQuantitaPersone,valRagazze,valRagazzi,valPrezzi,valDivertimento = 0;
     @Override
@@ -83,7 +83,8 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
                         if(documentSnapshot.getString("email").equals(email)){
                            uriProfilo = documentSnapshot.getString("fotoProfilo");
-                            nomeCognome = documentSnapshot.getString("nome") + " " + documentSnapshot.getString("cognome");
+                           fotoCliente = documentSnapshot.getString("fotoProfilo");
+                           nomeCognome = documentSnapshot.getString("nome") + " " + documentSnapshot.getString("cognome");
                         }
                     }
                 }
@@ -106,7 +107,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
     private void propvaNotifica(String token, String idPosttt) {
 
         TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
-
+        Log.d("jknkjandjan",token);
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
@@ -139,7 +140,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                         stringNotifiche.setVisualizzato("false");
                         stringNotifiche.setEmailCliente(email);
                         stringNotifiche.setEmailPub(emailPub);
-                        stringNotifiche.setFotoProfilo(uriProfilo);
+                        stringNotifiche.setFotoProfilo(fotoCliente);
                         stringNotifiche.setIdPost(idPostt);
                         stringNotifiche.setNomecognomeCliente(nomeCognome);
                         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
@@ -448,7 +449,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                                             documentReference1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> tas1k) {
-                                                    Log.d("ofndsnf",token);
+
 
                                                     propvaNotifica(token, task.getResult().getId());
                                                 }

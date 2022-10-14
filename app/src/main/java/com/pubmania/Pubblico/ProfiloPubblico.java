@@ -81,7 +81,7 @@ public class ProfiloPubblico extends AppCompatActivity {
 
     }
 
-
+    String tokenEmail;
     GridView gridView;
     ArrayList<StringRecensioni> arrayString = new ArrayList<>();
     ArrayRecensioniDisponibili arrayRecensioniDisponibili;
@@ -105,13 +105,27 @@ public class ProfiloPubblico extends AppCompatActivity {
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 TextView textView = (TextView) view.findViewById( R.id.textView56 );
                                 TextView idPo = (TextView) view.findViewById( R.id.textView69 );
-                                TextView token = (TextView) view.findViewById(R.id.textView72);
+                                firebaseFirestore.collection("Professionisti").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            for (QueryDocumentSnapshot documentSnapshot1 : task.getResult()){
+                                                if(documentSnapshot1.getString("email").equals(textView.getText().toString())){
+                                                    tokenEmail = documentSnapshot1.getString("token");
+                                                    Intent intent = new Intent(getApplicationContext(),FaiUnaRecensione.class);
+                                                    intent.putExtra( "emailPub",textView.getText().toString()  );
+                                                    intent.putExtra("idPost",idPo.getText().toString());
+                                                    intent.putExtra("token",tokenEmail);
+                                                    startActivity( intent );
 
-                                Intent intent = new Intent(getApplicationContext(),FaiUnaRecensione.class);
-                                intent.putExtra( "emailPub",textView.getText().toString()  );
-                                intent.putExtra("idPost",idPo.getText().toString());
-                                intent.putExtra("token",token.getText().toString());
-                                startActivity( intent );
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                });
+
+
                             }
                         } );
 

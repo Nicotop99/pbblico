@@ -1,5 +1,6 @@
 package com.pubmania.Pubblico;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -8,10 +9,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.pubmania.Pubblico.Array.ArrayCoupon_pub;
 import com.pubmania.Pubblico.String.StringPost_coupon;
@@ -26,7 +30,7 @@ import java.util.Locale;
 
 public class coupon_pub extends AppCompatActivity {
 
-    String emailPub;
+    String emailPub,nome,tokenProf;
     String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,30 @@ public class coupon_pub extends AppCompatActivity {
         setContentView( R.layout.activity_coupon_pub );
         emailPub = getIntent().getExtras().getString( "emailPub" );
         email = "nicolino.oliverio@gmail.com";
+        firebaseFirestore.collection("Pubblico").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                        if(documentSnapshot.getString("email").equals(email)){
+                            nome = documentSnapshot.getString("nome") + " " + documentSnapshot.getString("cognome");
+                        }
+                    }
+                }
+            }
+        });
+        firebaseFirestore.collection("Professionista").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                        if(documentSnapshot.getString("email").equals(email)){
+                            tokenProf = documentSnapshot.getString("token");
+                        }
+                    }
+                }
+            }
+        });
         setListView();
         filtri();
     }
@@ -53,7 +81,7 @@ public class coupon_pub extends AppCompatActivity {
                         StringPost_coupon stringPost_coupon = documentSnapshot.toObject( StringPost_coupon.class );
                         if(stringPost_coupon.getCategoria().equals( "Coupon" )){
                             arrayList.add( stringPost_coupon );
-                            ArrayCoupon_pub arrayCoupon_pub = new ArrayCoupon_pub( coupon_pub.this,arrayList,email,emailPub );
+                            ArrayCoupon_pub arrayCoupon_pub = new ArrayCoupon_pub( coupon_pub.this,arrayList,email,emailPub ,nome,tokenProf);
                             listView.setAdapter( arrayCoupon_pub );
                             Log.d("fkmdslmfsd",documentSnapshot.getString("token"));
 
@@ -109,7 +137,7 @@ public class coupon_pub extends AppCompatActivity {
 
                                     Log.d( "kfmslfsd", stringCoupon.getPrezzo() );
                                     arrayList.add( stringCoupon );
-                                    array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub );
+                                    array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub,nome ,tokenProf);
 
                                     listView.setAdapter( array_list_coupon );
                                 }
@@ -210,7 +238,7 @@ public class coupon_pub extends AppCompatActivity {
                                                             if (arrayList.size() > 0) {
 
 
-                                                                array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub );
+                                                                array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub,nome,tokenProf );
 
                                                                 listView.setAdapter( array_list_coupon );
                                                             }
@@ -330,7 +358,7 @@ public class coupon_pub extends AppCompatActivity {
                                                             if (arrayList.size() > 0) {
 
 
-                                                                array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub );
+                                                                array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub,nome ,tokenProf);
 
                                                                 listView.setAdapter( array_list_coupon );
                                                             }
@@ -390,7 +418,7 @@ public class coupon_pub extends AppCompatActivity {
                                 StringPost_coupon stringCoupon = documentSnapshot.toObject( StringPost_coupon.class );
                                 if(stringCoupon.getCategoria().equals( "Coupon" )) {
                                     arrayList.add( stringCoupon );
-                                    array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub );
+                                    array_list_coupon = new ArrayCoupon_pub( coupon_pub.this, arrayList, email, emailPub,nome,tokenProf );
                                     listView.setAdapter( array_list_coupon );
                                 }
                             }
