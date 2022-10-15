@@ -459,7 +459,14 @@ public class Profile_Pub extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
+                        try {
+                            if(response.getString("failure").equals("1")){
+                                // token non valido
 
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         // ok
                         StringNotifiche stringNotifiche = new StringNotifiche();
                         stringNotifiche.setVisualizzato("false");

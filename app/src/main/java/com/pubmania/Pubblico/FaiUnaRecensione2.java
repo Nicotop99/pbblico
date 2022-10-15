@@ -133,7 +133,7 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Log.d("jndkasndj",token);
 
                         StringNotifiche stringNotifiche = new StringNotifiche();
                         stringNotifiche.setCategoria("Recensione");
