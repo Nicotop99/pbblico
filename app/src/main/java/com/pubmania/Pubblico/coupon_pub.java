@@ -30,7 +30,8 @@ import java.util.Locale;
 
 public class coupon_pub extends AppCompatActivity {
 
-    String emailPub,nome,tokenProf;
+    String emailPub,nome;
+    ArrayList<String> tokenProf;
     String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,20 +51,21 @@ public class coupon_pub extends AppCompatActivity {
                 }
             }
         });
-        firebaseFirestore.collection("Professionista").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Professionisti").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                        if(documentSnapshot.getString("email").equals(email)){
-                            tokenProf = documentSnapshot.getString("token");
+                        if(documentSnapshot.getString("email").equals(emailPub)){
+                            tokenProf = (ArrayList<String>) documentSnapshot.get("token");
+                            setListView();
+                            filtri();
                         }
                     }
                 }
             }
         });
-        setListView();
-        filtri();
+
     }
 
     ListView listView;

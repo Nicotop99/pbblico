@@ -140,8 +140,10 @@ public class Profile_Pub extends AppCompatActivity {
                 if (seguiText.getText().toString().equals( getString( R.string.segui ) )) {
                     seguiText.setText( getString( R.string.smettidiseguire ) );
 
-                    Log.d("jndkjasndk",token);
-                    propvaNotifica(token,"ddd");
+                    for (int i = 0;i>token.size();i++){
+                        propvaNotifica(token.get(i),"ddd");
+
+                    }
 
                     firebaseFirestore.collection( email + "follower" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -497,7 +499,10 @@ public class Profile_Pub extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        propvaNotifica(token, idPost);
+                        for (int i = 0;i>token.size();i++){
+                            propvaNotifica(token.get(i),"ddd");
+
+                        }
                         Log.d("onfljdsnfl",error.getMessage() + " ciao");
                     }
                 }){
@@ -514,7 +519,7 @@ public class Profile_Pub extends AppCompatActivity {
 
 
     TextView followe,recensioni;
-    String token;
+    ArrayList<String> token;
     boolean segui = false;
     private void setTop() {
         followe = (TextView) findViewById( R.id.textView18 );
@@ -551,7 +556,7 @@ public class Profile_Pub extends AppCompatActivity {
                         if(documentSnapshot.getString( "email" ).equals( emailPub )){
                             followe.setText( documentSnapshot.getString( "follower" ) + " follower");
                             DocumentReference documentReference = firebaseFirestore.collection( "Professionisti" ).document(documentSnapshot.getId());
-                            token = documentSnapshot.getString("token");
+                            token = (ArrayList<String>) documentSnapshot.get("token");
                             if(documentSnapshot.getString( "personeCheTiHannoVisitato" ) == null){
                                 documentReference.update( "personeCheTiHannoVisitato","1" );
                             }else{
