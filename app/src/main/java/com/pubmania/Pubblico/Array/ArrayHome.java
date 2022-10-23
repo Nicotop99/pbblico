@@ -86,51 +86,30 @@ int count = 5;
         CircleImageView photoProfilePost = (CircleImageView) view.findViewById( R.id.circleImageView2 );
         Log.d("jjjjjjjjj","primo");
 
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection( "Professionisti" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        emailPub = stringPost_coupon.getEmail();
+        uri = stringPost_coupon.getFotoProfilo();
+        Log.d("dndmdmmd" ,uri);
+        nomePub = stringPost_coupon.getNomeLocale();
+        Log.d( "osefmodsf",nomePub + "a" );
+        textView.setText( emailPub );
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            ActivityInfo info = packageManager.getActivityInfo(context.getComponentName(), 0);
+            Log.e("ssfdsfsdfsdf", "Activity name:" + info.packageName);
 
-                if (task != null) {
-                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
-
-
-                        if(stringPost_coupon.getEmail().equals( documentSnapshot.getString( "email" ) )) {
-                            emailPub = documentSnapshot.getString( "email" );
-                            uri = documentSnapshot.getString( "fotoProfilo" );
-                            Log.d("dndmdmmd" ,uri);
-                            nomePub = documentSnapshot.getString( "nomeLocale" );
-                            Log.d( "osefmodsf",nomePub + "a" );
-                            textView.setText( emailPub );
-                            PackageManager packageManager = context.getPackageManager();
-                            try {
-                                ActivityInfo info = packageManager.getActivityInfo(context.getComponentName(), 0);
-                                Log.e("ssfdsfsdfsdf", "Activity name:" + info.packageName);
-
-                                if(info.name.equals( "com.pubmania.Pubblico.HomePage" )){
-                                    Glide.with( context ).load( uri  ).into( photoProfilePost );
-                                    Glide.with( context ).load( uri  ).into( photoProfiloCoupon );
-                                }
-
-
-                            } catch (PackageManager.NameNotFoundException e) {
-                                e.printStackTrace();
-                                Log.d("Ojdnkjsadja",e.getMessage());
-                            }
-
-                            nomePubPost.setText( nomePub );
-                            nomePubCoupon.setText( nomePub );
-                        }
-
-                    }
-                }
+            if(info.name.equals( "com.pubmania.Pubblico.HomePage" )){
+                Glide.with( context ).load( uri  ).into( photoProfilePost );
+                Glide.with( context ).load( uri  ).into( photoProfiloCoupon );
             }
-        } ).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("jjjjjjjjj",e.getMessage());
-            }
-        });
+
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Log.d("Ojdnkjsadja",e.getMessage());
+        }
+
+        nomePubPost.setText( nomePub );
+        nomePubCoupon.setText( nomePub );
 
         ImageView plusBotton = (ImageView) view.findViewById( R.id.imageView27 );
 

@@ -20,4 +20,10 @@
     <style name="spinnerPaese">
         <item name="font">@font/bahiama</item>
     </style>
+    <style name="DetailTheme" parent="android:Theme.Material.Light.DarkActionBar"/>
+    <style name="MyDialogThemed" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@drawable/back_crea_prodotto</item>
+        <item name="dialogCornerRadius">19dp</item>
+    </style>
+
 </resources>

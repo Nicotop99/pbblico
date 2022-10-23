@@ -2,6 +2,7 @@ package com.pubmania.Pubblico.Array;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,14 @@ public class ArraySearchprodotti extends ArrayAdapter<StringProdotto> {
 
     Activity context;
     ArrayList<StringProdotto> arrayList;
+    String boh;
 
-    public ArraySearchprodotti(@NonNull Context context, ArrayList<StringProdotto> arrayList) {
+
+    public ArraySearchprodotti(@NonNull Context context, ArrayList<StringProdotto> arrayList, String boh) {
         super( context, 0, arrayList );
         this.context = (Activity) context;
         this.arrayList = arrayList;
+        this.boh = boh;
     }
 
 
@@ -33,13 +37,19 @@ public class ArraySearchprodotti extends ArrayAdapter<StringProdotto> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = context.getLayoutInflater();
         View view = layoutInflater.inflate( R.layout.array_list_search,null,false );
+        TextView textView = (TextView) view.findViewById(R.id.textView21);
+        TextView idText = (TextView) view.findViewById(R.id.textView42);
+        if(boh.equals("no")) {
+            StringProdotto stringProdotto = getItem(position);
 
-        StringProdotto stringProdotto = getItem( position );
-        TextView textView = (TextView) view.findViewById( R.id.textView21 );
-        TextView idText = (TextView) view.findViewById( R.id.textView42 );
-        textView.setText( stringProdotto.getNome() );
-        idText.setText( stringProdotto.getId() );
-
+            textView.setText(stringProdotto.getNome());
+            idText.setText(stringProdotto.getId());
+        }
+        else{
+            Log.d("dnasjlda","dnmasljd");
+            textView.setText(context.getString(R.string.nessuprodotto));
+            idText.setText("s");
+        }
         return view;
     }
 }

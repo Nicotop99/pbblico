@@ -1,18 +1,12 @@
 package com.pubmania.Pubblico.String;
 
-public class Stringdoppia {
+public class doppiaStringa {
     public String uno,due,tre;
 
-
-
-    public Stringdoppia(){
-
-    }
-
-    public Stringdoppia(String uno, String due, String tre) {
+    public doppiaStringa(String uno, String due, String tre) {
         this.uno = uno;
-        this.due = due;
         this.tre = tre;
+        this.due = due;
     }
 
     public String getTre() {
@@ -37,5 +31,9 @@ public class Stringdoppia {
 
     public void setDue(String due) {
         this.due = due;
+    }
+
+    public doppiaStringa(){
+
     }
 }

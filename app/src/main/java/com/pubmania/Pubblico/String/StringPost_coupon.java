@@ -4,7 +4,7 @@ import java.util.List;
 
 public class StringPost_coupon {
 
-    public String id,descrizione,like,pinnato,categoria,token;
+    public String id,descrizione,like,pinnato,categoria,token,fotoProfilo,nomeLocale;
     public List<String> foto;
     public String titolo,email,tipo,giorno,mese,ora,prezzo,quanteVolte,chi,qualeProdotto,volteUtilizzate;
 
@@ -13,9 +13,11 @@ public class StringPost_coupon {
 
     }
 
-    public StringPost_coupon( String token,String id, String descrizione, String like, String pinnato, String categoria, List<String> foto, String titolo, String email, String tipo, String giorno, String mese, String ora, String prezzo, String quanteVolte, String chi, String qualeProdotto, String volteUtilizzate, String categoria1) {
+    public StringPost_coupon(String fotoProfilo, String nomeLocale, String token,String id, String descrizione, String like, String pinnato, String categoria, List<String> foto, String titolo, String email, String tipo, String giorno, String mese, String ora, String prezzo, String quanteVolte, String chi, String qualeProdotto, String volteUtilizzate, String categoria1) {
         this.id = id;
         this.token = token;
+        this.fotoProfilo = fotoProfilo;
+        this.nomeLocale = nomeLocale;
         this.descrizione = descrizione;
         this.like = like;
         this.pinnato = pinnato;
@@ -33,6 +35,23 @@ public class StringPost_coupon {
         this.qualeProdotto = qualeProdotto;
         this.volteUtilizzate = volteUtilizzate;
         this.categoria = categoria1;
+    }
+
+
+    public String getFotoProfilo() {
+        return fotoProfilo;
+    }
+
+    public void setFotoProfilo(String fotoProfilo) {
+        this.fotoProfilo = fotoProfilo;
+    }
+
+    public String getNomeLocale() {
+        return nomeLocale;
+    }
+
+    public void setNomeLocale(String nomeLocale) {
+        this.nomeLocale = nomeLocale;
     }
 
     public String getToken() {

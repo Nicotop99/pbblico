@@ -22,6 +22,7 @@
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/c1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -34,7 +35,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/back_filtro_select" />
+                    app:srcCompat="@drawable/back_filtro_select"
+                    tools:ignore="TouchTargetSizeCheck" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -56,6 +58,7 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/c2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -68,7 +71,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/back_filtro_non_select" />
+                    app:srcCompat="@drawable/back_filtro_non_select"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -89,6 +93,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/c3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -101,7 +106,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/back_filtro_non_select" />
+                    app:srcCompat="@drawable/back_filtro_non_select"
+                    tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -131,7 +137,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/bahiama"
-        android:text="trovati 10 pub vicino a te"
         android:textColor="@color/black"
         android:textSize="22dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -214,7 +219,8 @@
             android:backgroundTint="@color/giallochiaro"
             android:src="@drawable/search_icon"
             app:borderWidth="0dp"
-            app:layout_anchor="@id/bottomAppBar" />
+            app:layout_anchor="@id/bottomAppBar"
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

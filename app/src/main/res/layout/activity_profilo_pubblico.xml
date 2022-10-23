@@ -77,14 +77,14 @@
         android:id="@+id/listCouponutilizzati"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="2dp"
         android:divider="@drawable/back_trans"
+        android:padding="2dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="@+id/imageView40"
         app:layout_constraintEnd_toEndOf="@+id/imageView40"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imageView40"
-        app:layout_constraintTop_toTopOf="@+id/imageView40"
+        app:layout_constraintTop_toBottomOf="@+id/textView91"
         app:layout_constraintVertical_bias="0.0" />
 
     <ListView
@@ -142,5 +142,67 @@
         app:layout_constraintStart_toStartOf="@+id/imageView42"
         app:layout_constraintTop_toTopOf="@+id/imageView42" />
 
+    <TextView
+        android:id="@+id/textView91"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/bahiama"
+        android:text="@string/couponuti"
+        android:textColor="@color/black"
+        android:textSize="22dp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView40"
+        app:layout_constraintStart_toStartOf="@+id/imageView40"
+        app:layout_constraintTop_toTopOf="@+id/imageView40" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+
+        android:layout_width="0dp"
+
+        android:layout_height="match_parent"
+        android:visibility="visible"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="bottom"
+            android:backgroundTint="@color/giallochiaro"
+
+            >
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+
+                android:background="@drawable/back_trans"
+                app:itemIconTint="@drawable/back_bottom"
+                app:itemTextColor="@drawable/back_bottom"
+                app:menu="@menu/menu_bottom" />
+
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatBotton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:backgroundTint="@color/giallochiaro"
+            android:src="@drawable/search_icon"
+            app:borderWidth="0dp"
+            app:layout_anchor="@id/bottomAppBar"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

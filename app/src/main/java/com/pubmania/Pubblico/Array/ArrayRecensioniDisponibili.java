@@ -13,6 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.pubmania.Pubblico.R;
 import com.pubmania.Pubblico.String.StringRecensioni;
 
@@ -31,7 +36,9 @@ public class ArrayRecensioniDisponibili extends ArrayAdapter<StringRecensioni> {
         this.arrayList = arrayList;
     }
 
+
     @NonNull
+
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = context.getLayoutInflater();

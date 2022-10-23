@@ -119,52 +119,92 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
             notification.put("to", token);
             notification.put("data", notifcationBody);
         } catch (JSONException e) {
-            Log.e(TAG, "onCreate: " + e.getMessage() );
+            Log.e("adlskfdlsklfsd", "onCreate: " + e.getMessage() );
         }
-        sendNotification(notification,idPosttt);
+        sendNotification(notification,idPosttt,token);
 
 
 
 
     }
-
-    private void sendNotification(JSONObject notification,String idPostt) {
+boolean entrato = false;
+    private void sendNotification(JSONObject notification,String idPostt,String tok) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("jndkasndj",token);
 
-                        StringNotifiche stringNotifiche = new StringNotifiche();
-                        stringNotifiche.setCategoria("Recensione");
-                        stringNotifiche.setVisualizzato("false");
-                        stringNotifiche.setEmailCliente(email);
-                        stringNotifiche.setEmailPub(emailPub);
-                        stringNotifiche.setFotoProfilo(fotoCliente);
-                        stringNotifiche.setIdPost(idPostt);
-                        stringNotifiche.setNomecognomeCliente(nomeCognome);
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                        String currentDateandTime = sdf.format(new Date());
-                        stringNotifiche.setOra(currentDateandTime);
-                        firebaseFirestore.collection(emailPub+"Notifiche").add(stringNotifiche)
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                if(task.isSuccessful()){
-                                                    DocumentReference documentReference = task.getResult();
-                                                    documentReference.update("id",task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        try {
+                            if(response.getString("failure").equals("1")){
+                                Log.d("jkfnakjsdnfkjsadn",emailPub);
+                                // token non valido
+                                firebaseFirestore.collection("Professionisti").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                                if (documentSnapshot.getString("email").equals(emailPub)){
+                                                    DocumentReference d  = firebaseFirestore.collection("Professionisti").document(documentSnapshot.getId());
+                                                    ArrayList<String > a = (ArrayList<String>) documentSnapshot.get("token");
+                                                    Log.d("njanfd", String.valueOf(a.size()));
+                                                    for (int i = 0;i<a.size();i++){
+                                                        if(a.get(i).equals(tok)){
+                                                            a.remove(i);
+                                                        }
+                                                    }
+                                                    d.update("token",a).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
+                                                            Log.d("onjlm","ok");
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.d("onjlm","ok" + e.getMessage());
 
-                                                            startActivity(new Intent(getApplicationContext(), ProfiloPubblico.class));
-                                                            finish();
                                                         }
                                                     });
                                                 }
                                             }
-                                        });
+                                        }
+                                    }
+                                });
 
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if (entrato == false) {
+                            StringNotifiche stringNotifiche = new StringNotifiche();
+                            stringNotifiche.setCategoria("Recensione");
+                            stringNotifiche.setVisualizzato("false");
+                            stringNotifiche.setEmailCliente(email);
+                            stringNotifiche.setEmailPub(emailPub);
+                            stringNotifiche.setFotoProfilo(fotoCliente);
+                            stringNotifiche.setIdPost(idPostt);
+                            stringNotifiche.setNomecognomeCliente(nomeCognome);
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                            String currentDateandTime = sdf.format(new Date());
+                            stringNotifiche.setOra(currentDateandTime);
+                            firebaseFirestore.collection(emailPub + "Notifiche").add(stringNotifiche)
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentReference documentReference = task.getResult();
+                                                documentReference.update("id", task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
 
+                                                        startActivity(new Intent(getApplicationContext(), ProfiloPubblico.class));
+                                                        finish();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                            entrato = true;
+                        }
 
 
 
@@ -173,7 +213,10 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        propvaNotifica(token, idPost);
+                        for (int i = 0;i<token.size();i++){
+                            propvaNotifica(token.get(i),idPost);
+                            Log.d("llllll",token.get(i));
+                        }
                         Log.d("onfljdsnfl",error.getMessage() + " ciao");
                     }
                 }){
@@ -324,8 +367,11 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                                                                     documentReference1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<Void> taskk) {
-                                                                            Log.d("ofndsnf",token);
-                                                                            propvaNotifica(token,task.getResult().getId());
+                                                                            for (int i = 0;i<token.size();i++){
+                                                                                propvaNotifica(token.get(i),task.getResult().getId());
+                                                                                Log.d("llllllll",token.get(i));
+
+                                                                            }
                                                                         }
                                                                     }).addOnFailureListener(new OnFailureListener() {
                                                                         @Override
@@ -451,7 +497,10 @@ public class FaiUnaRecensione2 extends AppCompatActivity {
                                                 public void onComplete(@NonNull Task<Void> tas1k) {
 
 
-                                                    propvaNotifica(token, task.getResult().getId());
+                                                    for (int i = 0;i<token.size();i++){
+                                                        propvaNotifica(token.get(i),task.getResult().getId());
+                                                        Log.d("llllllll",token.get(i));
+                                                    }
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override

@@ -12,11 +12,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NavUtils;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,18 +28,28 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -55,6 +68,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.pubmania.Pubblico.Array.ArrayIngredienti;
 import com.pubmania.Pubblico.Array.ArrayProdotti;
 import com.pubmania.Pubblico.Array.ArraySearchprodotti;
@@ -78,7 +92,7 @@ import java.util.Map;
 public class Profile_Pub extends AppCompatActivity {
 
     String emailPub;
-    String email;
+    String email,tokenClienteeee;
     LocationManager locationManager;
     String nomeCognomeee,uriFoto;
     @Override
@@ -108,8 +122,333 @@ public class Profile_Pub extends AppCompatActivity {
         setTop();
         setButtonprofile();
         setVisite();
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(!task.isSuccessful()){
+                    return;
+                }
+                tokenClienteeee = task.getResult();
 
+            }
+        });
         locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+        setMenu();
+
+
+
+    }
+
+    ImageView setting;
+    PopupWindow popupWindow;
+    boolean coup_switch = false;
+    boolean post_switch = false;
+    private void setMenu() {
+        setting = (ImageView) findViewById(R.id.imageView53);
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View popupView = layoutInflater.inflate(R.layout.settings_profile_pub, null);
+
+                popupWindow = new PopupWindow(
+                        popupView,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                popupWindow.setBackgroundDrawable(new BitmapDrawable());
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        //TODO do sth here on dismiss
+                    }
+                });
+
+                Switch n_coupon = (Switch) popupView.findViewById(R.id.switch3);
+                Switch n_post = (Switch) popupView.findViewById(R.id.switch2);
+                firebaseFirestore.collection(email+"notificheCoupon").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                String[] em = documentSnapshot.getString("emailPub").split(" ");
+                                for (int i = 0;i<em.length;i++){
+                                    if(em[i].equals(emailPub)){
+                                        coup_switch = true;
+                                        n_coupon.setChecked(true);
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                firebaseFirestore.collection(email+"notifichePost").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                String[] em = documentSnapshot.getString("emailPub").split(" ");
+                                for (int i = 0;i<em.length;i++){
+                                    if(em[i].equals(emailPub)){
+                                        post_switch = true;
+                                        n_post.setChecked(true);
+
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                });
+
+
+
+
+                n_coupon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(coup_switch == false) {
+                            if (b == true) {
+                                Map<String, Object> user = new HashMap<>();
+                                firebaseFirestore.collection(emailPub + "notificheCoupon").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful() && task.getResult().size() > 0) {
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                                DocumentReference documentReference = firebaseFirestore.collection(emailPub + "notificheCoupon").document(documentSnapshot.getId());
+                                                documentReference.update("token", documentSnapshot.getString("token") + tokenClienteeee + "=" + email + " ");
+                                            }
+                                        } else {
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("token", tokenClienteeee + "=" + email + " ");
+                                            firebaseFirestore.collection(emailPub + "notificheCoupon").add(user);
+
+                                        }
+
+
+                                        firebaseFirestore.collection(email + "notificheCoupon").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful() && task.getResult().size() > 0) {
+                                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                                        DocumentReference documentReference = firebaseFirestore.collection(email + "notificheCoupon").document(documentSnapshot.getId());
+                                                        documentReference.update("emailPub", documentSnapshot.getString("emailPub") + emailPub + " ");
+                                                    }
+                                                } else {
+                                                    Map<String, Object> user = new HashMap<>();
+                                                    user.put("emailPub", emailPub);
+                                                    firebaseFirestore.collection(email + "notificheCoupon").add(user);
+
+                                                }
+
+                                            }
+                                        });
+
+                                    }
+
+
+                                });
+                            } else {
+
+                                firebaseFirestore.collection(emailPub + "notificheCoupon").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful() && task.getResult().size() > 0) {
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                                String[] getTok = documentSnapshot.getString("token").split(" ");
+                                                Log.d("jndjland", getTok[1]);
+                                                for (int i = 0; i < getTok.length; i++) {
+                                                    String[] geto = getTok[i].split("=");
+                                                    for (int in = 0; in < geto.length; in++) {
+                                                        if (geto[in].equals(tokenClienteeee)) {
+                                                            DocumentReference documentReference = firebaseFirestore.collection(emailPub + "notificheCoupon").document(documentSnapshot.getId());
+                                                            documentReference.update("token", documentSnapshot.getString("token").replace(tokenClienteeee + "=" + email, ""));
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+
+                                        firebaseFirestore.collection(email + "notificheCoupon").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful() && task.getResult().size() > 0) {
+                                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+
+                                                        String[] getTok = documentSnapshot.getString("emailPub").split(" ");
+                                                        for (int i = 0; i < getTok.length; i++) {
+                                                            if (getTok[i].equals(emailPub)) {
+                                                                Log.d("jnasljnds", "oasl");
+                                                                DocumentReference documentReference = firebaseFirestore.collection(email + "notificheCoupon").document(documentSnapshot.getId());
+                                                                documentReference.update("emailPub", documentSnapshot.getString("emailPub").replace(emailPub, ""));
+
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+
+                                            }
+                                        });
+
+                                    }
+
+
+                                });
+                            }
+                        }
+                        coup_switch = false;
+                    }
+                });
+                n_post.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                        if(post_switch == false) {
+                            if (b == true) {
+                                Map<String, Object> user = new HashMap<>();
+                                firebaseFirestore.collection(emailPub + "notifichePost").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful() && task.getResult().size() > 0) {
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                                Log.d("djasdjlask", "primo");
+                                                DocumentReference documentReference = firebaseFirestore.collection(emailPub + "notifichePost").document(documentSnapshot.getId());
+                                                documentReference.update("token", documentSnapshot.getString("token") + tokenClienteeee + "=" + email + " ");
+                                            }
+                                        } else {
+                                            Log.d("djasdjlask", "sec");
+
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("token", tokenClienteeee + "=" + email + " ");
+
+                                            firebaseFirestore.collection(emailPub + "notifichePost").add(user);
+
+                                        }
+
+
+                                        firebaseFirestore.collection(email + "notifichePost").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful() && task.getResult().size() > 0) {
+                                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                                        DocumentReference documentReference = firebaseFirestore.collection(email + "notifichePost").document(documentSnapshot.getId());
+                                                        documentReference.update("emailPub", documentSnapshot.getString("emailPub") + emailPub + " ");
+                                                    }
+                                                } else {
+                                                    Map<String, Object> user = new HashMap<>();
+                                                    user.put("emailPub", emailPub);
+                                                    firebaseFirestore.collection(email + "notifichePost").add(user);
+
+                                                }
+
+                                            }
+                                        });
+
+                                    }
+
+
+                                });
+                            } else {
+                                Map<String, Object> user = new HashMap<>();
+                                firebaseFirestore.collection(emailPub + "notifichePost").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful() && task.getResult().size() > 0) {
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+
+                                                String[] getTok = documentSnapshot.getString("token").split(" ");
+                                                for (int i = 0; i < getTok.length; i++) {
+                                                    String[] geto = getTok[i].split(String.valueOf("="));
+                                                    for (int in = 0; in < geto.length; in++) {
+                                                        if (geto[in].equals(tokenClienteeee)) {
+                                                            DocumentReference documentReference = firebaseFirestore.collection(emailPub + "notifichePost").document(documentSnapshot.getId());
+                                                            documentReference.update("token", documentSnapshot.getString("token").replace(tokenClienteeee + "=" + email, ""));
+
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
+
+                                        firebaseFirestore.collection(email + "notifichePost").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful() && task.getResult().size() > 0) {
+                                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+
+                                                        String[] getTok = documentSnapshot.getString("emailPub").split(" ");
+                                                        for (int i = 0; i < getTok.length; i++) {
+                                                            if (getTok[i].equals(emailPub)) {
+                                                                DocumentReference documentReference = firebaseFirestore.collection(email + "notifichePost").document(documentSnapshot.getId());
+                                                                documentReference.update("emailPub", documentSnapshot.getString("emailPub").replace(emailPub, ""));
+
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+
+                                            }
+                                        });
+
+                                    }
+
+
+                                });
+                            }
+                        }
+                        post_switch = false;
+                    }
+                });
+
+                popupWindow.showAsDropDown(setting);
+
+
+                /*
+                Log.e("fklmzdlkdsa","doksal");
+                PopupMenu popup = new PopupMenu(Profile_Pub.this, setting);
+                popup.getMenuInflater().inflate(R.menu.menu_profilo_pub, popup.getMenu());
+                popup.show();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        int id = menuItem.getItemId();
+                        //handle clicks
+                        if (id==R.id.primo){
+                            //Copy clicked
+                            View view = (View) findViewById(R.id.primo);
+                            PopupMenu popup = new PopupMenu(Profile_Pub.this,view);
+                            popup.getMenuInflater().inflate(R.menu.menu_bottom, popup.getMenu());
+                            popup.show();
+
+                        }
+                        else if (id==R.id.sec){
+                            //Share clicked
+                            //set text
+
+                        }
+                        else if (id==R.id.ter){
+                            //Save clicked
+                            //set text
+
+                        }
+
+                        return false;
+                    }
+                });
+
+                 */
+            }
+        });
     }
 
     private void setVisite() {
@@ -133,6 +472,25 @@ public class Profile_Pub extends AppCompatActivity {
         seguiText = (TextView) findViewById( R.id.textView12 );
         i_orario = (ImageView) findViewById( R.id.imageButton90 );
         followeInt = 0;
+        firebaseFirestore.collection(email+"follower").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(!queryDocumentSnapshots.isEmpty()){
+                    List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+                    for (DocumentSnapshot l : documentSnapshots){
+                        for(int i = 1;i<l.getData().size();i++){
+                            if(!l.getString(String.valueOf(i)).equals("")){
+                                if(l.getString(String.valueOf(i)).equals(emailPub)){
+                                    seguiText.setText(getString(R.string.smettidiseguire));
+                                }else{
+                                    seguiText.setText(getString(R.string.segui));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
         i_segui.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,40 +498,60 @@ public class Profile_Pub extends AppCompatActivity {
                 if (seguiText.getText().toString().equals( getString( R.string.segui ) )) {
                     seguiText.setText( getString( R.string.smettidiseguire ) );
 
-                    for (int i = 0;i>token.size();i++){
-                        propvaNotifica(token.get(i),"ddd");
+                    if(token.size() >0) {
+                        for (int i = 0; i < token.size(); i++) {
+                            propvaNotifica(token.get(i), "ddd");
 
+                        }
                     }
 
                     firebaseFirestore.collection( email + "follower" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task != null) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    followeInt = documentSnapshot.getData().size() + 1;
-                                    idFol = documentSnapshot.getId();
+                                if(task.getResult().size() > 0) {
+                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                        followeInt = documentSnapshot.getData().size() + 1;
+                                        idFol = documentSnapshot.getId();
+                                    }
+
+
+                                    DocumentReference documentReference = firebaseFirestore.collection(email + "follower").document(idFol);
+                                    documentReference.update(String.valueOf(followeInt), emailPub).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Map<String, Object> user = new HashMap<>();
+                                                    user.put("emailCliente", email);
+                                                    user.put("emailPub", emailPub);
+                                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                                                    String currentDateandTime = sdf.format(new Date());
+                                                    user.put("ora", currentDateandTime);
+                                                    firebaseFirestore.collection(emailPub + "follower").add(user);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    seguiText.setText(getString(R.string.segui));
+
+                                                }
+                                            });
+                                }else{
+                                    Map<String,String> map = new HashMap<>();
+                                    map.put("1",emailPub);
+                                    firebaseFirestore.collection(email+"follower").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("emailCliente", email);
+                                            user.put("emailPub", emailPub);
+                                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                                            String currentDateandTime = sdf.format(new Date());
+                                            user.put("ora", currentDateandTime);
+                                            firebaseFirestore.collection(emailPub + "follower").add(user);
+                                        }
+                                    });
                                 }
-
-
-                                DocumentReference documentReference = firebaseFirestore.collection( email + "follower" ).document( idFol );
-                                documentReference.update( String.valueOf( followeInt ), emailPub ).addOnCompleteListener( new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Map<String, Object> user = new HashMap<>();
-                                        user.put("emailCliente", email);
-                                        user.put("emailPub", emailPub);
-                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                                        String currentDateandTime = sdf.format(new Date());
-                                        user.put( "ora" ,currentDateandTime);
-                                        firebaseFirestore.collection( emailPub+"follower" ).add( user );
-                                    }
-                                } ).addOnFailureListener( new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        seguiText.setText( getString( R.string.segui ) );
-
-                                    }
-                                } );
                             }
                         }
                     } ).addOnFailureListener( new OnFailureListener() {
@@ -350,6 +728,7 @@ public class Profile_Pub extends AppCompatActivity {
                 tcvenerdi = (TextInputEditText)viewView. findViewById( R.id.textcVenerdi);
                 tcsabato = (TextInputEditText)viewView. findViewById( R.id.textcSabato);
                 tcdomenica = (TextInputEditText)viewView. findViewById( R.id.textcDomenica);
+
                     firebaseFirestore.collection( "Professionisti" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -435,7 +814,7 @@ public class Profile_Pub extends AppCompatActivity {
 
         TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
 
-
+        Log.d("mndflmdlmdk",token);
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
         try {
@@ -448,58 +827,97 @@ public class Profile_Pub extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e(TAG, "onCreate: " + e.getMessage() );
         }
-        sendNotification(notification);
+        sendNotification(notification,token);
 
 
 
 
     }
+    boolean entrato = true;
 
-    private void sendNotification(JSONObject notification) {
+    private void sendNotification(JSONObject notification,String tok) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        try {
+                            Log.d("jnjknfajndasndlkm", String.valueOf(response.getString("failure")));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         try {
                             if(response.getString("failure").equals("1")){
+                                Log.d("jkfnakjsdnfkjsadn",emailPub);
                                 // token non valido
+                                firebaseFirestore.collection("Professionisti").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                                if (documentSnapshot.getString("email").equals(emailPub)){
+                                                    DocumentReference d  = firebaseFirestore.collection("Professionisti").document(documentSnapshot.getId());
+                                                    ArrayList<String > a = (ArrayList<String>) documentSnapshot.get("token");
+                                                    Log.d("njanfd", String.valueOf(a.size()));
+                                                    for (int i = 0;i<a.size();i++){
+                                                        if(a.get(i).equals(tok)){
+                                                            a.remove(i);
+                                                        }
+                                                    }
+                                                    d.update("token",a).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Log.d("onjlm","ok");
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.d("onjlm","ok" + e.getMessage());
+
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
 
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        Log.d("fhfdaskdnjand",tok);
                         // ok
-                        StringNotifiche stringNotifiche = new StringNotifiche();
-                        stringNotifiche.setVisualizzato("false");
-                        stringNotifiche.setIdPost("");
-                        stringNotifiche.setFotoProfilo(uriFoto);
-                        stringNotifiche.setNomecognomeCliente(nomeCognomeee);
-                        stringNotifiche.setCategoria("Follower");
-                        stringNotifiche.setEmailPub(emailPub);
-                        stringNotifiche.setEmailCliente(email);
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-                        String currentDateandTime = sdf.format(new Date());
-                        stringNotifiche.setOra(currentDateandTime);
-                        firebaseFirestore.collection(emailPub + "Notifiche").add(stringNotifiche)
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                if(task.isSuccessful()){
-                                                    DocumentReference documentReference = firebaseFirestore.collection(emailPub+"Notifiche").document(task.getResult().getId());
-                                                    documentReference.update("id",task.getResult().getId());
-                                                }
+                        if(entrato == true) {
+                            StringNotifiche stringNotifiche = new StringNotifiche();
+                            stringNotifiche.setVisualizzato("false");
+                            stringNotifiche.setIdPost("");
+                            stringNotifiche.setFotoProfilo(uriFoto);
+                            stringNotifiche.setNomecognomeCliente(nomeCognomeee);
+                            stringNotifiche.setCategoria("Follower");
+                            stringNotifiche.setEmailPub(emailPub);
+                            stringNotifiche.setEmailCliente(email);
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                            String currentDateandTime = sdf.format(new Date());
+                            stringNotifiche.setOra(currentDateandTime);
+                            firebaseFirestore.collection(emailPub + "Notifiche").add(stringNotifiche)
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentReference documentReference = firebaseFirestore.collection(emailPub + "Notifiche").document(task.getResult().getId());
+                                                documentReference.update("id", task.getResult().getId());
                                             }
-                                        });
-                        Log.d("duiskajnd","djnsakd");
-
-
+                                        }
+                                    });
+                            Log.d("duiskajnd", "djnsakd");
+                            entrato = false;
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        for (int i = 0;i>token.size();i++){
+                        for (int i = 0;i<token.size();i++){
                             propvaNotifica(token.get(i),"ddd");
 
                         }
@@ -520,31 +938,22 @@ public class Profile_Pub extends AppCompatActivity {
 
     TextView followe,recensioni;
     ArrayList<String> token;
+    ImageView r1,r2,r3,r4,r5;
     boolean segui = false;
+    int media = 0;
     private void setTop() {
+        r1 = (ImageView) findViewById(R.id.imageView16);
+        r2 = (ImageView) findViewById(R.id.imageView15);
+        r3 = (ImageView) findViewById(R.id.imageView14);
+        r4 = (ImageView) findViewById(R.id.imageView13);
+        r5 = (ImageView) findViewById(R.id.imageView12);
         followe = (TextView) findViewById( R.id.textView18 );
-
+        recensioni = (TextView) findViewById(R.id.textView17);
         firebaseFirestore.collection( email+"follower" ).get().addOnCompleteListener( new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task != null){
-                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
-
-                        for (int i = 0;i<documentSnapshot.getData().size();i++){
-                            int l = i+1;
-
-                            if(documentSnapshot.getData().get( String.valueOf( l ) ) != null) {
-                                if (documentSnapshot.getData().get( String.valueOf( l ) ).equals( emailPub )) {
-                                    seguiText.setText( getString( R.string.smettidiseguire ) );
-                                    segui = true;
-                                } else {
-                                    seguiText.setText( getString( R.string.segui ) );
-                                    segui = false;
-                                }
-                            }
-                        }
-
-                    }
+                if(task != null) {
+                    followe.setText(task.getResult().size() +" " + "follower");
                 }
             }
         } );
@@ -587,6 +996,59 @@ public class Profile_Pub extends AppCompatActivity {
         } );
 
 
+
+        firebaseFirestore.collection(emailPub+"Rec").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    recensioni.setText(task.getResult().size() + " " + getString(R.string.recensioniii));
+                    if (task.getResult().size() > 0) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            media += Integer.parseInt(documentSnapshot.getString("media"));
+                        }
+                        r1.setVisibility(View.VISIBLE);
+                        r2.setVisibility(View.VISIBLE);
+                        r3.setVisibility(View.VISIBLE);
+                        r4.setVisibility(View.VISIBLE);
+                        r5.setVisibility(View.VISIBLE);
+
+                        int totMedia = media / task.getResult().size();
+                        if (totMedia == 1) {
+                            r1.setImageResource(R.drawable.recensione_si);
+                            r2.setImageResource(R.drawable.recensione_no);
+                            r3.setImageResource(R.drawable.recensione_no);
+                            r4.setImageResource(R.drawable.recensione_no);
+                            r5.setImageResource(R.drawable.recensione_no);
+                        } else if (totMedia == 2) {
+                            r1.setImageResource(R.drawable.recensione_si);
+                            r2.setImageResource(R.drawable.recensione_si);
+                            r3.setImageResource(R.drawable.recensione_no);
+                            r4.setImageResource(R.drawable.recensione_no);
+                            r5.setImageResource(R.drawable.recensione_no);
+                        } else if (totMedia == 3) {
+                            r1.setImageResource(R.drawable.recensione_si);
+                            r2.setImageResource(R.drawable.recensione_si);
+                            r3.setImageResource(R.drawable.recensione_si);
+                            r4.setImageResource(R.drawable.recensione_no);
+                            r5.setImageResource(R.drawable.recensione_no);
+                        } else if (totMedia == 4) {
+                            r1.setImageResource(R.drawable.recensione_si);
+                            r2.setImageResource(R.drawable.recensione_si);
+                            r3.setImageResource(R.drawable.recensione_si);
+                            r4.setImageResource(R.drawable.recensione_si);
+                            r5.setImageResource(R.drawable.recensione_no);
+                        } else if (totMedia == 5) {
+                            r1.setImageResource(R.drawable.recensione_si);
+                            r2.setImageResource(R.drawable.recensione_si);
+                            r3.setImageResource(R.drawable.recensione_si);
+                            r4.setImageResource(R.drawable.recensione_si);
+                            r5.setImageResource(R.drawable.recensione_si);
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
 
@@ -594,6 +1056,7 @@ public class Profile_Pub extends AppCompatActivity {
     Group groupSearch;
     ArrayList<StringProdotto> arrayProdottis;
     ListView listSearch;
+    boolean c = false;
     ImageView tran;
     private void setSearch() {
         t_search = (TextInputEditText) findViewById( R.id.textPass );
@@ -622,7 +1085,6 @@ public class Profile_Pub extends AppCompatActivity {
                     groupSearch.setVisibility( View.VISIBLE );
                 }
                 arrayProdottis = new ArrayList<>();
-                arrayProdottis.clear();
                 listSearch.setAdapter( null );
                 firebaseFirestore.collection( emailPub ).get().addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -630,100 +1092,124 @@ public class Profile_Pub extends AppCompatActivity {
                         if(queryDocumentSnapshots != null){
                             List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                             for (DocumentSnapshot l: list){
-                                if (l.getId().contains( charSequence.toString() ) == true) {
-                                    StringProdotto stringProdotto = l.toObject( StringProdotto.class );
-
-                                    // after getting data from Firebase we are
-                                    // storing that data in our array list
-                                    arrayProdottis.add( stringProdotto );
-                                } else {
-                                    Log.d( "pfdòs","fkd" );
+                                if(!cat.equals("tutti")) {
+                                    if (l.getId().toLowerCase(Locale.ROOT).contains(charSequence.toString().toLowerCase(Locale.ROOT)) && l.getString("categoria").equals(cat)) {
+                                        StringProdotto stringProdotto = l.toObject(StringProdotto.class);
+                                        Log.d("ndlasdklad", "lkmdsklm");
+                                        // after getting data from Firebase we are
+                                        // storing that data in our array list
+                                        arrayProdottis.add(stringProdotto);
+                                        ArraySearchprodotti arraySearchprodotti = new ArraySearchprodotti(Profile_Pub.this, arrayProdottis, "no");
+                                        listSearch.setAdapter(arraySearchprodotti);
+                                    } else {
+                                        Log.d("pfdòs", "fkd");
+                                    }
+                                }else{
+                                    if (l.getId().toLowerCase(Locale.ROOT).contains(charSequence.toString().toLowerCase(Locale.ROOT))) {
+                                        StringProdotto stringProdotto = l.toObject(StringProdotto.class);
+                                        Log.d("ndlasdklad", "lkmdsklm");
+                                        // after getting data from Firebase we are
+                                        // storing that data in our array list
+                                        arrayProdottis.add(stringProdotto);
+                                        ArraySearchprodotti arraySearchprodotti = new ArraySearchprodotti(Profile_Pub.this, arrayProdottis, "no");
+                                        listSearch.setAdapter(arraySearchprodotti);
+                                    } else {
+                                        Log.d("pfdòs", "fkd");
+                                    }
                                 }
 
-                                ArraySearchprodotti arraySearchprodotti = new ArraySearchprodotti( Profile_Pub.this,arrayProdottis );
+                            }
+                            Log.d("jndljasnd", String.valueOf(arrayProdottis.size()));
+                            if(arrayProdottis.size()>0) {
+                                Log.d("djnajdn","dnsalnd");
+
+                            }else{
+                                StringProdotto stringProdotto = new StringProdotto();
+                                stringProdotto.setCategoria("ciao");
+
+                                arrayProdottis.add(stringProdotto);
+                                ArraySearchprodotti arraySearchprodotti = new ArraySearchprodotti(Profile_Pub.this, arrayProdottis, "si");
                                 listSearch.setAdapter( arraySearchprodotti );
-                                listSearch.setOnItemClickListener( new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                        TextView idText = (TextView) view.findViewById( R.id.textView42 );
-                                        String idPost = idText.getText().toString();
-                                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder( Profile_Pub.this,R.style.MyDialogTheme );
+                            }
+                            listSearch.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    TextView idText = (TextView) view.findViewById( R.id.textView42 );
+                                    String idPost = idText.getText().toString();
+                                    if(!idPost.equals("s")) {
+                                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Profile_Pub.this, R.style.MyDialogTheme);
 // ...Irrelevant code for customizing the buttons and title
-                                        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-                                        View viewView = inflater.inflate( R.layout.layout_item_list_profile_pub, null );
-                                        dialogBuilder.setView( viewView );
+                                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                        View viewView = inflater.inflate(R.layout.layout_item_list_profile_pub, null);
+                                        dialogBuilder.setView(viewView);
                                         AlertDialog alertDialogg = dialogBuilder.create();
 
-                                        TextView titolo = (TextView) viewView.findViewById( R.id.textView36 );
-                                        TextView prezzo = (TextView) viewView.findViewById( R.id.textView41 );
-                                        Spinner spinner = (Spinner) viewView.findViewById( R.id.spinner );
-                                        spinner.setEnabled( false );
-                                        ListView listngredienti = (ListView) viewView.findViewById( R.id.listingr );
-                                        ImageSlider imageSlider = (ImageSlider) viewView.findViewById( R.id.image_slider );
-                                        TextView ing = (TextView) viewView.findViewById( R.id.textView43);
+                                        TextView titolo = (TextView) viewView.findViewById(R.id.textView36);
+                                        TextView prezzo = (TextView) viewView.findViewById(R.id.textView41);
+                                        Spinner spinner = (Spinner) viewView.findViewById(R.id.spinner);
+                                        spinner.setEnabled(false);
+                                        ListView listngredienti = (ListView) viewView.findViewById(R.id.listingr);
+                                        ImageSlider imageSlider = (ImageSlider) viewView.findViewById(R.id.image_slider);
+                                        TextView ing = (TextView) viewView.findViewById(R.id.textView43);
 
-                                        firebaseFirestore.collection( emailPub ).document(idPost).get().addOnCompleteListener( new OnCompleteListener<DocumentSnapshot>() {
+                                        firebaseFirestore.collection(emailPub).document(idPost).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                if(task.isSuccessful()){
-                                                    titolo.setText(task.getResult().getString( "nome" ));
-                                                    prezzo.setText( task.getResult().getString( "prezzo" ) + " ,00€" );
-                                                    if(task.getResult().getString( "categoria" ).equals( "Cocktail" )){
-                                                    }else if(task.getResult().getString( "categoria" ).equals( "Bevande" )){
-                                                        spinner.setSelection( 3 );
-                                                    }
-                                                    else if(task.getResult().getString( "categoria" ).equals( "Dolci" )){
-                                                        spinner.setSelection( 1 );
-                                                    }
-                                                    else if(task.getResult().getString( "categoria" ).equals( "Salati" )){
-                                                        spinner.setSelection( 2 );
+                                                if (task.isSuccessful()) {
+                                                    titolo.setText(task.getResult().getString("nome"));
+                                                    prezzo.setText(task.getResult().getString("prezzo") + " ,00€");
+                                                    if (task.getResult().getString("categoria").equals("Cocktail")) {
+                                                    } else if (task.getResult().getString("categoria").equals("Bevande")) {
+                                                        spinner.setSelection(3);
+                                                    } else if (task.getResult().getString("categoria").equals("Dolci")) {
+                                                        spinner.setSelection(1);
+                                                    } else if (task.getResult().getString("categoria").equals("Salati")) {
+                                                        spinner.setSelection(2);
                                                     }
 
                                                     ArrayList<String> group = (ArrayList<String>) task.getResult().get("ingredienti");
                                                     ArrayList<String> fotoList = (ArrayList<String>) task.getResult().get("foto");
                                                     ArrayList<SlideModel> arrMod = new ArrayList<>();
 
-                                                    Log.d( "mldkmkdmd", String.valueOf( task.getResult().get("ingredienti") ) );
+                                                    Log.d("mldkmkdmd", String.valueOf(task.getResult().get("ingredienti")));
 
-                                                        if (group != null) {
-                                                            if(group.size() >0){
-                                                                ArrayIngredienti arraySearchprodotti = new ArrayIngredienti( Profile_Pub.this, group );
-                                                                listngredienti.setAdapter( arraySearchprodotti );
-                                                            }else {
-                                                                listngredienti.setVisibility( View.GONE );
-                                                                ing.setVisibility( View.GONE );
-                                                            }
-
+                                                    if (group != null) {
+                                                        if (group.size() > 0) {
+                                                            ArrayIngredienti arraySearchprodotti = new ArrayIngredienti(Profile_Pub.this, group);
+                                                            listngredienti.setAdapter(arraySearchprodotti);
                                                         } else {
-                                                            listngredienti.setVisibility( View.GONE );
-                                                            ing.setVisibility( View.GONE );
+                                                            listngredienti.setVisibility(View.GONE);
+                                                            ing.setVisibility(View.GONE);
                                                         }
 
-
-                                                        if (fotoList != null) {
-                                                            if(fotoList.size() >0) {
-                                                                for (int i = 0; i < fotoList.size(); i++) {
-
-                                                                    arrMod.add( new SlideModel( fotoList.get( i ), ScaleTypes.CENTER_CROP ) );
-                                                                }
-                                                                imageSlider.setImageList( arrMod );
-
-                                                            }
-                                                            else {
-                                                                imageSlider.setVisibility( View.GONE );
-                                                            }
-                                                        } else {
-                                                            imageSlider.setVisibility( View.GONE );
-                                                        }
-
+                                                    } else {
+                                                        listngredienti.setVisibility(View.GONE);
+                                                        ing.setVisibility(View.GONE);
                                                     }
+
+
+                                                    if (fotoList != null) {
+                                                        if (fotoList.size() > 0) {
+                                                            for (int i = 0; i < fotoList.size(); i++) {
+
+                                                                arrMod.add(new SlideModel(fotoList.get(i), ScaleTypes.CENTER_CROP));
+                                                            }
+                                                            imageSlider.setImageList(arrMod);
+
+                                                        } else {
+                                                            imageSlider.setVisibility(View.GONE);
+                                                        }
+                                                    } else {
+                                                        imageSlider.setVisibility(View.GONE);
+                                                    }
+
                                                 }
+                                            }
 
-                                        } );
+                                        });
 
 
-
-                                        alertDialogg.setOnKeyListener( new DialogInterface.OnKeyListener() {
+                                        alertDialogg.setOnKeyListener(new DialogInterface.OnKeyListener() {
                                             @Override
                                             public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
                                                 if (i == KeyEvent.KEYCODE_BACK
@@ -735,11 +1221,11 @@ public class Profile_Pub extends AppCompatActivity {
                                                 }
                                                 return false;
                                             }
-                                        } );
+                                        });
                                         alertDialogg.show();
                                     }
-                                } );
-                            }
+                                }
+                            } );
                         }
                     }
                 } );
@@ -765,7 +1251,7 @@ public class Profile_Pub extends AppCompatActivity {
 
     ImageButton cocktailImage,dolciImage,salatiImage,bevandeImage;
     ConstraintLayout consCat,conOgg;
-    String cat;
+    String cat = "tutti";
     ArrayList<StringProdotto> arrayList = new ArrayList<>();
     ListView listView;
     ArrayList<Integer> coutProdotti = new ArrayList<>();
@@ -956,8 +1442,10 @@ public class Profile_Pub extends AppCompatActivity {
     ImageSlider imageSlider;
     ArrayList<SlideModel> arrayPost;
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    TextView nessunaFoto;
     private void setImageSlider() {
         imageSlider = (ImageSlider) findViewById( R.id.image_slider );
+        nessunaFoto = (TextView) findViewById(R.id.textView90);
         arrayPost = new ArrayList<>();
         firebaseFirestore.collection( emailPub+"Post" ).get().addOnSuccessListener( new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -981,6 +1469,11 @@ public class Profile_Pub extends AppCompatActivity {
 
 
                     }
+                    if(arrayPost.size() == 0){
+                        String k = "https://firebasestorage.googleapis.com/v0/b/pub-mania.appspot.com/o/pubmania.png?alt=media&token=e264ba22-734a-4edc-94d7-24ba2e3b5580";
+                        arrayPost.add(new SlideModel(k,ScaleTypes.CENTER_INSIDE));
+                        imageSlider.setImageList(arrayPost);
+                    }
                 }
             }
         } );
@@ -995,7 +1488,7 @@ public class Profile_Pub extends AppCompatActivity {
             consCat.setVisibility( View.VISIBLE );
             conOgg.setVisibility( View.GONE );
             Log.d( "oflskfm","2" );
-
+            cat = "tutti";
             if(arrayProdottis != null){
                 arrayList.clear();
                 listView.setAdapter( null );
@@ -1014,7 +1507,10 @@ public class Profile_Pub extends AppCompatActivity {
         else{
             if(getIntent().getExtras().getString( "i" ) != null){
                 finish();
+                Log.d("jdnasjndna","kkkk");
             }else {
+                Log.d("jdnasjndna","ddddd");
+
                 Intent i = new Intent( getApplicationContext(), HomePage.class );
                 i.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
                 startActivity( i );

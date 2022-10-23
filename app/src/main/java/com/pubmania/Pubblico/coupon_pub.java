@@ -38,7 +38,7 @@ public class coupon_pub extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_coupon_pub );
         emailPub = getIntent().getExtras().getString( "emailPub" );
-        email = "nicolino.oliverio@gmail.com";
+        email = "nicolino.oliverio@gmail";
         firebaseFirestore.collection("Pubblico").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

@@ -43,6 +43,9 @@ public class ArraySegutiiProgilo extends ArrayAdapter<Stringdoppia> {
         CircleImageView circleImageView = (CircleImageView) view.findViewById( R.id.circle );
         TextView nome = (TextView) view.findViewById( R.id.textView51 );
         nome.setText(stringdoppia.getUno());
+        TextView emailll = (TextView) view.findViewById(R.id.textView73);
+        emailll.setText(stringdoppia.getTre());
+
         Glide.with( context ).load( stringdoppia.getDue() ).into( circleImageView );
 
 

@@ -5,6 +5,8 @@
     android:id="@+id/const_ho"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:theme="@style/DetailTheme"
     tools:context=".Profile_Pub">
 
     <ImageView
@@ -95,6 +97,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/linea2" />
 
+    <TextView
+        android:id="@+id/textView90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bahiama"
+        android:text="@string/nessunafoto"
+        android:textColor="@color/black"
+        android:textSize="22dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/image_slider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:layout_width="110dp"
         android:layout_height="wrap_content"
@@ -148,9 +164,11 @@
                 app:layout_constraintEnd_toEndOf="@+id/imageButton90"
                 app:layout_constraintTop_toTopOf="@+id/textView121" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <Space
             android:layout_width="wrap_content"
             android:layout_height="4dp" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -195,6 +213,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/imageButton6"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <Space
             android:layout_width="wrap_content"
             android:layout_height="4dp" />
@@ -523,7 +542,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="-8dp"
-        android:layout_marginTop="-8dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/textView17"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/imageView16"
@@ -545,6 +564,7 @@
         android:id="@+id/imageView16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/textView17"
         app:layout_constraintEnd_toStartOf="@+id/imageView15"
         app:srcCompat="@drawable/recensione_si" />
@@ -553,6 +573,7 @@
         android:id="@+id/imageView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/textView17"
         app:layout_constraintEnd_toStartOf="@+id/imageView13"
         app:srcCompat="@drawable/recensione_si" />
@@ -571,6 +592,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/textView17"
         app:layout_constraintEnd_toEndOf="@+id/image_slider"
         app:srcCompat="@drawable/recensione_si" />
@@ -579,9 +601,20 @@
         android:id="@+id/imageView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/textView17"
         app:layout_constraintEnd_toStartOf="@+id/imageView12"
         app:srcCompat="@drawable/recensione_si" />
+
+    <ImageView
+        android:id="@+id/imageView53"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/setting_icon" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group"
@@ -626,7 +659,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
-        app:srcCompat="@drawable/rectangle_72"
         tools:visibility="visible" />
 
     <com.google.android.material.textfield.TextInputLayout

@@ -128,4 +128,23 @@
     <string name="nuovarecensioneda">Nuova recensione da</string>
     <string name="cliccalanotificaperidettagli">Clicca la notifica per i dettagli</string>
     <string name="hainiziatoaseguirti">ha iniziato a seguirti</string>
+    <string name="nomelocale">Nome locale</string>
+    <string name="notifichenuovpost">Notifiche nuovo post</string>
+    <string name="notifichenuovocoupoj">Notifiche nuovo coupon</string>
+    <string name="segnala">Segnala</string>
+    <string name="ricercapub">Ricerca pub</string>
+    <string name="nessunrisultato">Nessun risultato</string>
+    <string name="nessunarecensione">Nessuna recensione</string>
+    <string name="cisono">Trovati</string>
+    <string name="pubvicinoate">pub vicino a te</string>
+    <string name="nessunafoto">Nessuna foto pinnata</string>
+    <string name="recensioniii">recensioni</string>
+    <string name="nessuprodotto">Nessun prodotto trovato</string>
+    <string name="sipregadinonuscire">Si prega di non uscire</string>
+    <string name="aggiornamentopostincorso">Aggiornamento post in corso</string>
+    <string name="salvamodifice">Salva modifiche</string>
+    <string name="cambiafoto">Cambia foto</string>
+    <string name="fotoProfiloCambiata">Foto profilo cambiata</string>
+    <string name="erroreriprovapiutardi">Errore riprovi più tardi</string>
+    <string name="couponuti">Coupon utilizzati</string>
 </resources>

@@ -58,6 +58,7 @@ public class HomePage extends AppCompatActivity {
         setContentView( R.layout.activity_home_page );
         email = "nicolino.oliverio@gmail.com";
         click = false;
+        startService(new Intent(getApplicationContext(),MyFirebaseMessagingService.class));
 
 
 
@@ -66,7 +67,18 @@ public class HomePage extends AppCompatActivity {
         setMenuBasso();
     }
 BottomNavigationView bottomAppBar;
+    FloatingActionButton searchButton;
     private void setMenuBasso() {
+
+        searchButton = (FloatingActionButton) findViewById(R.id.floatBotton);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), searchActivty.class));
+            }
+        });
+
+
         {
 
             bottomAppBar = (BottomNavigationView) findViewById( R.id.bottomNavView );
@@ -100,7 +112,10 @@ BottomNavigationView bottomAppBar;
                             finish();
                             arrayList.clear();
                             break;
-
+                        case R.id.profile_bottom:
+                            startActivity( new Intent( getApplicationContext(), ProfiloPubblico.class ) );
+                            finish();
+                            arrayList.clear();
                     }
                     return true;
                 }

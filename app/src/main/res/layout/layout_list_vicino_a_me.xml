@@ -26,38 +26,6 @@
         app:layout_constraintTop_toTopOf="@+id/imageView35"
         app:srcCompat="@drawable/button_registrati" />
 
-    <ImageView
-        android:id="@+id/imageView31"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/imageView34"
-        app:layout_constraintTop_toBottomOf="@+id/textView33"
-        app:srcCompat="@drawable/recensione_si" />
-
-    <ImageView
-        android:id="@+id/imageView32"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/imageView30"
-        app:layout_constraintTop_toBottomOf="@+id/textView33"
-        app:srcCompat="@drawable/recensione_si" />
-
-    <ImageView
-        android:id="@+id/imageView33"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/imageView32"
-        app:layout_constraintTop_toBottomOf="@+id/textView33"
-        app:srcCompat="@drawable/recensione_si" />
-
-    <ImageView
-        android:id="@+id/imageView34"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/imageView33"
-        app:layout_constraintTop_toBottomOf="@+id/textView33"
-        app:srcCompat="@drawable/recensione_si" />
-
 
     <androidx.cardview.widget.CardView
         android:id="@+id/imageView29"
@@ -131,27 +99,70 @@
         app:layout_constraintStart_toStartOf="@+id/textView30"
         app:layout_constraintTop_toBottomOf="@+id/textView32" />
 
-    <ImageView
-        android:id="@+id/imageView30"
+    <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/textView33"
-        app:layout_constraintTop_toBottomOf="@+id/textView33"
-        app:srcCompat="@drawable/recensione_si" />
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/textView30"
+        app:layout_constraintTop_toBottomOf="@+id/textView33">
+
+        <TextView
+            android:id="@+id/textView82"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bahiama"
+            android:text="@string/nessunarecensione"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imageView30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/recensione_si" />
+
+        <ImageView
+            android:id="@+id/imageView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/recensione_si" />
+
+        <ImageView
+            android:id="@+id/imageView33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/recensione_si" />
+
+        <ImageView
+            android:id="@+id/imageView34"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/recensione_si" />
+
+        <ImageView
+            android:id="@+id/imageView31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:srcCompat="@drawable/recensione_si" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView35"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="-32dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/imageView26"
-        app:layout_constraintEnd_toEndOf="@+id/imageView31"
-        app:layout_constraintStart_toStartOf="@+id/imageView30"
-        app:layout_constraintTop_toBottomOf="@+id/imageView32"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout4"
         app:srcCompat="@drawable/button_registrati" />
 
     <TextView
